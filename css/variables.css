@@ -9,6 +9,19 @@
     --color-danger: #E74C3C;
     --color-danger-dark: #c0392b;
 
+    /* V2.0: Couleurs des parcours */
+    --parcours-standard: #2C3E50;
+    --parcours-a: #3498DB;        /* Bleu clair - détente */
+    --parcours-b: #9B59B6;        /* Violet - relâchement */
+    --parcours-c: #F39C12;        /* Orange - économie */
+    --parcours-d: #95A5A6;        /* Gris - modifié */
+
+    /* V2.0: Couleurs des parcours (variantes claires) */
+    --parcours-a-light: rgba(52, 152, 219, 0.1);
+    --parcours-b-light: rgba(155, 89, 182, 0.1);
+    --parcours-c-light: rgba(243, 156, 18, 0.1);
+    --parcours-d-light: rgba(149, 165, 166, 0.1);
+
     /* Couleurs de fond */
     --bg-light: #FAFAFA;
     --bg-white: #FFFFFF;
