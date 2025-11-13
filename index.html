@@ -29,6 +29,7 @@
     <div id="screen-home" class="screen active">
         <header class="app-header">
             <h1 class="app-title">Out of Dysarthria</h1>
+            <button id="btn-stats" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: var(--spacing-lg);">📊 Stats</button>
         </header>
 
         <main class="screen-content">
@@ -79,6 +80,7 @@
         <footer class="exercise-actions">
             <button id="btn-done" class="btn btn-primary">C'est fait ✓</button>
             <button id="btn-repeat" class="btn btn-secondary">Répéter</button>
+            <button id="btn-not-working" class="btn btn-text" style="margin-top: var(--spacing-sm);">Ça ne marche pas</button>
         </footer>
     </div>
 
@@ -126,8 +128,98 @@
         </div>
     </div>
 
+    <!-- V2.0: Écran de statistiques -->
+    <div id="screen-statistics" class="screen">
+        <header class="app-header">
+            <button id="btn-stats-back" class="btn-text">← Retour</button>
+            <h1 class="app-title">Statistiques</h1>
+        </header>
+
+        <main class="screen-content">
+            <div id="stats-content">
+                <!-- Contenu dynamique généré par statistics.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- V2.0: Modale de diagnostic -->
+    <div id="modal-diagnostic" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="diagnostic-menu">
+                <h3 class="title">Quel type de difficulté ?</h3>
+
+                <div id="diagnostic-options">
+                    <div class="diagnostic-option" data-blockage="ventricular">
+                        <div class="icon">😓</div>
+                        <div class="content">
+                            <div class="name">Bandes ventriculaires</div>
+                            <div class="description">Vibrations parasites</div>
+                            <div class="parcours-name">→ Parcours A - Détente laryngée</div>
+                        </div>
+                    </div>
+
+                    <div class="diagnostic-option" data-blockage="spasticity">
+                        <div class="icon">💪</div>
+                        <div class="content">
+                            <div class="name">Spasticité musculaire</div>
+                            <div class="description">Muscles trop tendus</div>
+                            <div class="parcours-name">→ Parcours B - Relâchement musculaire</div>
+                        </div>
+                    </div>
+
+                    <div class="diagnostic-option" data-blockage="fatigue">
+                        <div class="icon">😴</div>
+                        <div class="content">
+                            <div class="name">Fatigue importante</div>
+                            <div class="description">Manque d'énergie</div>
+                            <div class="parcours-name">→ Parcours C - Mode économie</div>
+                        </div>
+                    </div>
+
+                    <div class="diagnostic-option" data-blockage="unknown">
+                        <div class="icon">🌀</div>
+                        <div class="content">
+                            <div class="name">Autre / Ne sais pas</div>
+                            <div class="description">Parcours standard modifié</div>
+                            <div class="parcours-name">→ Parcours D - Standard modifié</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="margin-top: var(--spacing-xl);">
+                    <button id="btn-cancel-diagnostic" class="btn btn-secondary">Annuler</button>
+                    <button id="btn-confirm-diagnostic" class="btn btn-primary" disabled>Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V2.0: Écran d'onboarding -->
+    <div id="screen-onboarding" class="screen">
+        <div id="onboarding-content" class="onboarding-step">
+            <!-- Contenu dynamique généré par ui.js -->
+        </div>
+    </div>
+
+    <!-- V2.0: Bannière de suggestion (cachée par défaut) -->
+    <div id="suggestion-banner" class="suggestion-banner" style="display: none; position: fixed; top: var(--spacing-lg); left: var(--spacing-lg); right: var(--spacing-lg); z-index: var(--z-header);">
+        <div class="icon">💡</div>
+        <div class="content">
+            <div class="title">Suggestion</div>
+            <div class="description" id="suggestion-text"></div>
+        </div>
+        <div class="actions">
+            <button id="btn-accept-suggestion" class="btn">Utiliser</button>
+            <button id="btn-dismiss-suggestion" class="btn btn-dismiss">Non merci</button>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/parcours.js"></script>
+    <script src="js/parcours-router.js"></script>
+    <script src="js/suggestions.js"></script>
+    <script src="js/statistics.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/timer.js"></script>
     <script src="js/ui.js"></script>

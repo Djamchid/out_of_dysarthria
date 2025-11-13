@@ -11,8 +11,16 @@ class App {
         this.ui = new UI();
         this.timer = new StepTimer('current');
 
+        // V2.0: Nouveaux modules
+        this.router = new ParcoursRouter(this.parcours, this.storage);
+        this.suggestions = new SuggestionsEngine(this.storage);
+        this.statistics = new Statistics(this.storage);
+
         // État de l'application
         this.currentSession = null;
+
+        // V2.0: État des bifurcations
+        this.blockagesEncountered = [];
 
         // Bind des méthodes pour préserver le contexte
         this.handleStartClick = this.handleStartClick.bind(this);
@@ -24,6 +32,15 @@ class App {
         this.handleCancelAbandon = this.handleCancelAbandon.bind(this);
         this.handleFinishClick = this.handleFinishClick.bind(this);
         this.handleFeedbackClick = this.handleFeedbackClick.bind(this);
+
+        // V2.0: Nouveaux handlers
+        this.handleNotWorkingClick = this.handleNotWorkingClick.bind(this);
+        this.handleConfirmDiagnostic = this.handleConfirmDiagnostic.bind(this);
+        this.handleCancelDiagnostic = this.handleCancelDiagnostic.bind(this);
+        this.handleStatsClick = this.handleStatsClick.bind(this);
+        this.handleStatsBackClick = this.handleStatsBackClick.bind(this);
+        this.handleAcceptSuggestion = this.handleAcceptSuggestion.bind(this);
+        this.handleDismissSuggestion = this.handleDismissSuggestion.bind(this);
     }
 
     /**
@@ -63,6 +80,9 @@ class App {
         this.ui.addEventListener(this.ui.exerciseElements.btnRepeat, 'click', this.handleRepeatClick);
         this.ui.addEventListener(this.ui.exerciseElements.btnAbandon, 'click', this.handleAbandonClick);
 
+        // V2.0: Bouton "Ça ne marche pas"
+        this.ui.addEventListener(this.ui.exerciseElements.btnNotWorking, 'click', this.handleNotWorkingClick);
+
         // Modale d'abandon
         this.ui.addEventListener(this.ui.modalElements.btnConfirm, 'click', this.handleConfirmAbandon);
         this.ui.addEventListener(this.ui.modalElements.btnCancel, 'click', this.handleCancelAbandon);
@@ -70,6 +90,18 @@ class App {
         // Écran de complétion
         this.ui.addEventListener(this.ui.completionElements.btnFinish, 'click', this.handleFinishClick);
         this.ui.addEventListener(this.ui.completionElements.linkFeedback, 'click', this.handleFeedbackClick);
+
+        // V2.0: Statistiques
+        this.ui.addEventListener(this.ui.statsElements.btnStats, 'click', this.handleStatsClick);
+        this.ui.addEventListener(this.ui.statsElements.btnStatsBack, 'click', this.handleStatsBackClick);
+
+        // V2.0: Diagnostic
+        this.ui.addEventListener(this.ui.diagnosticElements.btnConfirm, 'click', this.handleConfirmDiagnostic);
+        this.ui.addEventListener(this.ui.diagnosticElements.btnCancel, 'click', this.handleCancelDiagnostic);
+
+        // V2.0: Suggestions
+        this.ui.addEventListener(this.ui.suggestionElements.btnAccept, 'click', this.handleAcceptSuggestion);
+        this.ui.addEventListener(this.ui.suggestionElements.btnDismiss, 'click', this.handleDismissSuggestion);
     }
 
     /**
@@ -107,6 +139,23 @@ class App {
     showHome() {
         this.ui.showScreen('home');
         this.checkForActiveSession();
+
+        // V2.0: Afficher une suggestion au démarrage si pertinent
+        this.showStartSuggestionIfRelevant();
+    }
+
+    /**
+     * V2.0: Affiche une suggestion au démarrage si pertinent
+     */
+    showStartSuggestionIfRelevant() {
+        if (!this.suggestions.shouldShowSuggestions()) {
+            return;
+        }
+
+        const suggestion = this.suggestions.getSuggestionAtStart();
+        if (suggestion) {
+            this.ui.showSuggestion(suggestion);
+        }
     }
 
     /**
@@ -313,23 +362,46 @@ class App {
         // Calculer la durée totale
         const totalDuration = this.storage.calculateSessionDuration(this.currentSession);
 
-        // Ajouter à l'historique
+        // V2.0: Ajouter à l'historique avec format enrichi
         const historyEntry = {
             id: this.currentSession.id,
             startedAt: this.currentSession.startedAt,
             completedAt: this.currentSession.completedAt,
             totalDuration: totalDuration,
             completed: true,
-            stepsCount: this.currentSession.stepsCompleted.length
+            stepsCount: this.currentSession.stepsCompleted.length,
+            // V2.0: Nouveaux champs
+            parcoursPath: this.generateParcoursPath(),
+            blockages: this.blockagesEncountered,
+            outcome: {
+                completed: true,
+                totalDuration: totalDuration,
+                userRating: null // Peut être ajouté plus tard
+            }
         };
 
-        this.storage.addToHistory(historyEntry);
+        this.storage.addToHistoryV2(historyEntry);
 
         // Supprimer la session en cours
         this.storage.clearCurrentSession();
 
+        // Réinitialiser l'état V2.0
+        this.blockagesEncountered = [];
+        this.router.reset();
+
         // Afficher l'écran de complétion
         this.showCompletionScreen(totalDuration);
+    }
+
+    /**
+     * V2.0: Génère le chemin des parcours utilisés
+     * @returns {Array<string>}
+     */
+    generateParcoursPath() {
+        const history = this.router.getState().parcoursHistory;
+        return history.map(entry => {
+            return `${entry.type}:0-${this.parcours.getTotalSteps() - 1}`;
+        });
     }
 
     /**
@@ -363,6 +435,125 @@ class App {
             console.log('Feedback reçu:', feedback);
             alert('Merci pour votre retour ! (Dans une future version, ce feedback sera sauvegardé)');
         }
+    }
+
+    // ==========================================
+    // V2.0: Nouvelles méthodes de gestion d'événements
+    // ==========================================
+
+    /**
+     * Gère le clic sur "Ça ne marche pas"
+     */
+    handleNotWorkingClick(e) {
+        e.preventDefault();
+
+        // Enregistrer une répétition
+        const currentStep = this.parcours.getCurrentStep();
+        if (currentStep) {
+            const count = this.router.recordStepRepetition(currentStep.id);
+            console.log(`Répétition ${count} de l'étape ${currentStep.id}`);
+        }
+
+        // Afficher le menu de diagnostic
+        this.ui.showDiagnosticMenu();
+    }
+
+    /**
+     * Gère la confirmation du diagnostic
+     */
+    handleConfirmDiagnostic(e) {
+        e.preventDefault();
+
+        const blockage = this.ui.getSelectedBlockage();
+        if (!blockage) return;
+
+        const currentStepIndex = this.parcours.getCurrentStepIndex();
+
+        // Enregistrer le blocage
+        if (!this.blockagesEncountered.includes(blockage)) {
+            this.blockagesEncountered.push(blockage);
+        }
+
+        // Effectuer la bifurcation
+        const success = this.router.initiateBifurcation(blockage, currentStepIndex);
+
+        if (success) {
+            console.log(`Bifurcation vers parcours pour "${blockage}"`);
+
+            // Cacher le menu de diagnostic
+            this.ui.hideDiagnosticMenu();
+
+            // Sauvegarder la progression
+            this.saveCurrentProgress();
+
+            // Afficher la nouvelle première étape du parcours alternatif
+            this.showExerciseScreen();
+        }
+    }
+
+    /**
+     * Gère l'annulation du diagnostic
+     */
+    handleCancelDiagnostic(e) {
+        e.preventDefault();
+        this.ui.hideDiagnosticMenu();
+    }
+
+    /**
+     * Gère le clic sur le bouton Stats
+     */
+    handleStatsClick(e) {
+        e.preventDefault();
+
+        // Générer et afficher les statistiques
+        const stats = this.statistics.generateStatsScreen();
+        this.ui.renderStatistics(stats);
+        this.ui.showScreen('statistics');
+    }
+
+    /**
+     * Gère le retour depuis l'écran de statistiques
+     */
+    handleStatsBackClick(e) {
+        e.preventDefault();
+        this.showHome();
+    }
+
+    /**
+     * Gère l'acceptation d'une suggestion
+     */
+    handleAcceptSuggestion(e) {
+        e.preventDefault();
+
+        const suggestion = this.ui.getCurrentSuggestion();
+        if (!suggestion) return;
+
+        // Enregistrer l'acceptance
+        this.suggestions.recordSuggestionFeedback(Date.now().toString(), true);
+
+        // Démarrer avec le parcours suggéré
+        if (suggestion.parcoursType) {
+            this.parcours.reset(suggestion.parcoursType);
+        }
+
+        // Cacher la suggestion et démarrer
+        this.ui.hideSuggestion();
+        this.startNewCourse();
+    }
+
+    /**
+     * Gère le rejet d'une suggestion
+     */
+    handleDismissSuggestion(e) {
+        e.preventDefault();
+
+        const suggestion = this.ui.getCurrentSuggestion();
+        if (suggestion) {
+            // Enregistrer le rejet
+            this.suggestions.recordSuggestionFeedback(Date.now().toString(), false);
+        }
+
+        this.ui.hideSuggestion();
     }
 
     /**
