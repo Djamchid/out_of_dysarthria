@@ -1,0 +1,379 @@
+/* Layout - Structure générale de l'application */
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Gestion des écrans */
+.screen {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* En-tête de l'application */
+.app-header {
+    padding: var(--spacing-xl) var(--container-padding);
+    text-align: center;
+}
+
+.app-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+/* Contenu principal */
+.screen-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) var(--container-padding);
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ============================================
+   ÉCRAN D'ACCUEIL
+   ============================================ */
+
+.home-icon {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.home-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 400px;
+}
+
+.info-text {
+    margin-top: var(--spacing-2xl);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* ============================================
+   ÉCRAN D'EXERCICE
+   ============================================ */
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--container-padding);
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+}
+
+.timer {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Barre de progression */
+.progress-bar-container {
+    padding: var(--spacing-lg) var(--container-padding) var(--spacing-md);
+    background-color: var(--bg-white);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+#step-number {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--bg-gray);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    transition: width var(--transition-normal);
+}
+
+/* Contenu de l'exercice */
+.exercise-content {
+    padding: var(--spacing-2xl) var(--container-padding);
+    justify-content: flex-start;
+}
+
+.step-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.step-instruction {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+    line-height: var(--line-height-relaxed);
+}
+
+.step-content {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xl);
+}
+
+/* Modes d'affichage du contenu */
+.step-content.display-spaced {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-lg);
+}
+
+.step-content.display-spaced .phoneme {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-extrabold);
+    color: var(--color-primary);
+    padding: var(--spacing-md);
+    min-width: 60px;
+    text-align: center;
+}
+
+.step-content.display-grouped {
+    gap: var(--spacing-md);
+}
+
+.step-content.display-grouped .phoneme-group {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    letter-spacing: 0.5em;
+    text-align: center;
+}
+
+.step-content.display-list {
+    gap: var(--spacing-md);
+}
+
+.step-content.display-list .word-item {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    padding: var(--spacing-md);
+    background-color: var(--bg-gray);
+    border-radius: var(--border-radius-sm);
+    min-width: 200px;
+    text-align: center;
+}
+
+.step-content.display-single {
+    text-align: center;
+}
+
+.step-content.display-single .sentence {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    line-height: var(--line-height-relaxed);
+    max-width: 500px;
+    padding: var(--spacing-xl);
+    background-color: var(--bg-gray);
+    border-radius: var(--border-radius-md);
+}
+
+/* Actions de l'exercice */
+.exercise-actions {
+    padding: var(--spacing-lg) var(--container-padding);
+    background-color: var(--bg-white);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    position: sticky;
+    bottom: 0;
+}
+
+/* ============================================
+   ÉCRAN DE COMPLÉTION
+   ============================================ */
+
+.completion-content {
+    text-align: center;
+}
+
+.completion-icon {
+    margin-bottom: var(--spacing-xl);
+}
+
+.completion-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.completion-stats {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.stat-item {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-label {
+    font-weight: var(--font-weight-medium);
+}
+
+.stat-value {
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.completion-actions {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: var(--spacing-xl);
+}
+
+.link-subtle {
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+.link-subtle:hover {
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   MODALE
+   ============================================ */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal-overlay);
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    max-width: 400px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-modal-content);
+}
+
+.modal-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.modal-text {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--spacing-xl);
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.modal-actions .btn {
+    flex: 1;
+}
+
+/* ============================================
+   RESPONSIVE - Tablette et Desktop
+   ============================================ */
+
+@media screen and (min-width: 768px) {
+    .app-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .step-title {
+        font-size: 40px;
+    }
+
+    .step-instruction {
+        font-size: var(--font-size-lg);
+    }
+
+    .phoneme {
+        font-size: 56px !important;
+    }
+
+    .phoneme-group {
+        font-size: var(--font-size-xl) !important;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .home-actions,
+    .completion-actions {
+        max-width: 500px;
+    }
+
+    .modal-content {
+        max-width: 500px;
+    }
+}

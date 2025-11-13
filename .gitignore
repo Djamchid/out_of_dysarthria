@@ -1,0 +1,41 @@
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies (si ajout futur de build tools)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs (pour futures versions avec bundler)
+dist/
+build/
+.cache/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

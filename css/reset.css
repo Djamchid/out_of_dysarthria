@@ -1,0 +1,76 @@
+/* CSS Reset - Normalisation des styles navigateurs */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+button {
+    font-family: inherit;
+    font-size: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Suppression des styles par défaut pour les éléments interactifs */
+input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* Accessibilité - focus visible pour navigation clavier */
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid #2C3E50;
+    outline-offset: 2px;
+}
+
+/* Désactiver le zoom sur les input en mobile Safari */
+@media screen and (max-width: 768px) {
+    input[type="text"],
+    input[type="number"],
+    textarea {
+        font-size: 16px !important;
+    }
+}

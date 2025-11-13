@@ -1,0 +1,244 @@
+/* Components - Styles des composants réutilisables */
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-fast);
+    min-height: var(--tap-target-min);
+    width: 100%;
+    text-align: center;
+    user-select: none;
+}
+
+/* Bouton primaire */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--text-white);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Bouton secondaire */
+.btn-secondary {
+    background-color: var(--bg-gray);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+}
+
+.btn-secondary:active {
+    background-color: var(--bg-gray);
+}
+
+/* Bouton danger */
+.btn-danger {
+    background-color: var(--color-danger);
+    color: var(--text-white);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-danger-dark);
+}
+
+.btn-danger:active {
+    background-color: var(--color-danger);
+}
+
+/* Bouton texte */
+.btn-text {
+    background: none;
+    color: var(--text-secondary);
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    min-height: auto;
+    width: auto;
+}
+
+.btn-text:hover {
+    color: var(--text-primary);
+}
+
+.btn-text.btn-danger {
+    color: var(--color-danger);
+}
+
+.btn-text.btn-danger:hover {
+    color: var(--color-danger-dark);
+}
+
+/* États des boutons */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Animation d'apparition des écrans */
+.screen.active {
+    animation: fadeIn var(--transition-normal);
+}
+
+/* Animation d'apparition du contenu des étapes */
+.step-content {
+    animation: slideUp var(--transition-slow);
+}
+
+/* Animation de la modale */
+.modal {
+    animation: fadeIn var(--transition-fast);
+}
+
+.modal-content {
+    animation: slideUp var(--transition-normal);
+}
+
+/* ============================================
+   UTILITAIRES
+   ============================================ */
+
+/* Classes d'espacement */
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+/* Classes de texte */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-bold { font-weight: var(--font-weight-bold); }
+.text-medium { font-weight: var(--font-weight-medium); }
+
+.text-sm { font-size: var(--font-size-sm); }
+.text-md { font-size: var(--font-size-md); }
+.text-lg { font-size: var(--font-size-lg); }
+
+/* Classes de visibilité */
+.hidden { display: none !important; }
+.visible { display: block !important; }
+
+/* ============================================
+   ACCESSIBILITÉ
+   ============================================ */
+
+/* Skip to content pour screen readers */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: var(--text-white);
+    padding: var(--spacing-sm);
+    z-index: 1000;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* Focus visible pour navigation clavier */
+.btn:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.btn-secondary:focus-visible {
+    outline-color: var(--text-primary);
+}
+
+.btn-danger:focus-visible {
+    outline-color: var(--color-danger);
+}
+
+/* Réduction des animations pour ceux qui préfèrent */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    .btn,
+    .exercise-actions,
+    .exercise-header {
+        display: none;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Out of Dysarthria",
+  "short_name": "Out of Dysarthria",
+  "description": "Parcours guidé de récupération vocale pour personnes souffrant de dysarthrie",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#2C3E50",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "health",
+    "medical",
+    "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "Commencer le parcours",
+      "short_name": "Commencer",
+      "description": "Démarrer un nouveau parcours de récupération vocale",
+      "url": "/?action=start",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": []
+}

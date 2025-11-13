@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Parcours guidé de récupération vocale pour personnes souffrant de dysarthrie">
+    <meta name="theme-color" content="#2C3E50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Out of Dysarthria">
+
+    <title>Out of Dysarthria</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192.png">
+</head>
+<body>
+    <!-- Écran d'accueil -->
+    <div id="screen-home" class="screen active">
+        <header class="app-header">
+            <h1 class="app-title">Out of Dysarthria</h1>
+        </header>
+
+        <main class="screen-content">
+            <div class="home-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40 10C40 10 25 20 25 35C25 45 31.7 52 40 52C48.3 52 55 45 55 35C55 20 40 10 40 10Z" stroke="#2C3E50" stroke-width="3" fill="none"/>
+                    <ellipse cx="40" cy="60" rx="15" ry="8" stroke="#2C3E50" stroke-width="3" fill="none"/>
+                    <path d="M25 60C25 60 30 68 40 68C50 68 55 60 55 60" stroke="#2C3E50" stroke-width="3" fill="none"/>
+                </svg>
+            </div>
+
+            <div class="home-actions">
+                <button id="btn-start" class="btn btn-primary">Commencer le parcours</button>
+                <button id="btn-resume" class="btn btn-secondary" style="display: none;">Reprendre</button>
+            </div>
+
+            <div id="last-session-info" class="info-text" style="display: none;">
+                <!-- Sera rempli dynamiquement -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Écran d'exercice -->
+    <div id="screen-exercise" class="screen">
+        <header class="exercise-header">
+            <button id="btn-abandon" class="btn-text btn-danger">← Abandonner</button>
+            <div id="timer-display" class="timer">00:00</div>
+        </header>
+
+        <div class="progress-bar-container">
+            <div class="progress-info">
+                <span id="step-number">Étape 1/8</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <main class="screen-content exercise-content">
+            <h2 id="step-title" class="step-title">Voyelles isolées</h2>
+            <p id="step-instruction" class="step-instruction">Prononcez chaque voyelle clairement</p>
+
+            <div id="step-content" class="step-content">
+                <!-- Contenu dynamique selon l'étape -->
+            </div>
+        </main>
+
+        <footer class="exercise-actions">
+            <button id="btn-done" class="btn btn-primary">C'est fait ✓</button>
+            <button id="btn-repeat" class="btn btn-secondary">Répéter</button>
+        </footer>
+    </div>
+
+    <!-- Écran de fin -->
+    <div id="screen-completion" class="screen">
+        <header class="app-header">
+            <h1 class="app-title">Out of Dysarthria</h1>
+        </header>
+
+        <main class="screen-content completion-content">
+            <div class="completion-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="35" stroke="#27AE60" stroke-width="3" fill="none"/>
+                    <path d="M25 40L35 50L55 30" stroke="#27AE60" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <h2 class="completion-title">Parcours terminé</h2>
+
+            <div class="completion-stats">
+                <p class="stat-item">
+                    <span class="stat-label">Durée:</span>
+                    <span id="total-duration" class="stat-value">--</span>
+                </p>
+            </div>
+
+            <div class="completion-actions">
+                <button id="btn-finish" class="btn btn-primary">Terminer</button>
+            </div>
+
+            <a href="#" id="link-feedback" class="link-subtle">Comment s'est passé ce parcours ?</a>
+        </main>
+    </div>
+
+    <!-- Modale de confirmation d'abandon -->
+    <div id="modal-abandon" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <h3 class="modal-title">Abandonner le parcours ?</h3>
+            <p class="modal-text">Votre progression sera sauvegardée et vous pourrez reprendre plus tard.</p>
+            <div class="modal-actions">
+                <button id="btn-cancel-abandon" class="btn btn-secondary">Annuler</button>
+                <button id="btn-confirm-abandon" class="btn btn-danger">Abandonner</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/parcours.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker enregistré:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Erreur Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
