@@ -619,9 +619,29 @@ class UI {
     renderSettings(preferences) {
         // Charger les parcours favoris
         const favoriteParcours = preferences.favoriteParcours || [];
+
+        // COMPLETS
         document.getElementById('pref-standard').checked = favoriteParcours.includes('standard');
+        document.getElementById('pref-renforcement-global').checked = favoriteParcours.includes('renforcement-global');
+        document.getElementById('pref-session-courte').checked = favoriteParcours.includes('session-courte');
+        document.getElementById('pref-complet').checked = favoriteParcours.includes('complet');
+
+        // FONCTION
         document.getElementById('pref-detente').checked = favoriteParcours.includes('detente-laryngee');
         document.getElementById('pref-relachement').checked = favoriteParcours.includes('relachement-musculaire');
+        document.getElementById('pref-souffle').checked = favoriteParcours.includes('souffle');
+        document.getElementById('pref-voix-resonance').checked = favoriteParcours.includes('voix-resonance');
+        document.getElementById('pref-voisement').checked = favoriteParcours.includes('voisement');
+        document.getElementById('pref-articulation').checked = favoriteParcours.includes('articulation');
+        document.getElementById('pref-deglutition').checked = favoriteParcours.includes('deglutition');
+
+        // ANATOMIE
+        document.getElementById('pref-levres').checked = favoriteParcours.includes('levres');
+        document.getElementById('pref-langue').checked = favoriteParcours.includes('langue');
+        document.getElementById('pref-machoire').checked = favoriteParcours.includes('machoire');
+        document.getElementById('pref-joues').checked = favoriteParcours.includes('joues');
+
+        // DIVERS
         document.getElementById('pref-economie').checked = favoriteParcours.includes('mode-economie');
         document.getElementById('pref-modifie').checked = favoriteParcours.includes('standard-modifie');
 
@@ -644,9 +664,29 @@ class UI {
     getSettingsFormValues() {
         // Parcours favoris
         const favoriteParcours = [];
+
+        // COMPLETS
         if (document.getElementById('pref-standard').checked) favoriteParcours.push('standard');
+        if (document.getElementById('pref-renforcement-global').checked) favoriteParcours.push('renforcement-global');
+        if (document.getElementById('pref-session-courte').checked) favoriteParcours.push('session-courte');
+        if (document.getElementById('pref-complet').checked) favoriteParcours.push('complet');
+
+        // FONCTION
         if (document.getElementById('pref-detente').checked) favoriteParcours.push('detente-laryngee');
         if (document.getElementById('pref-relachement').checked) favoriteParcours.push('relachement-musculaire');
+        if (document.getElementById('pref-souffle').checked) favoriteParcours.push('souffle');
+        if (document.getElementById('pref-voix-resonance').checked) favoriteParcours.push('voix-resonance');
+        if (document.getElementById('pref-voisement').checked) favoriteParcours.push('voisement');
+        if (document.getElementById('pref-articulation').checked) favoriteParcours.push('articulation');
+        if (document.getElementById('pref-deglutition').checked) favoriteParcours.push('deglutition');
+
+        // ANATOMIE
+        if (document.getElementById('pref-levres').checked) favoriteParcours.push('levres');
+        if (document.getElementById('pref-langue').checked) favoriteParcours.push('langue');
+        if (document.getElementById('pref-machoire').checked) favoriteParcours.push('machoire');
+        if (document.getElementById('pref-joues').checked) favoriteParcours.push('joues');
+
+        // DIVERS
         if (document.getElementById('pref-economie').checked) favoriteParcours.push('mode-economie');
         if (document.getElementById('pref-modifie').checked) favoriteParcours.push('standard-modifie');
 
