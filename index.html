@@ -261,6 +261,41 @@
         </div>
     </div>
 
+    <!-- V2.0: Modale de feedback et notation -->
+    <div id="modal-feedback" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="feedback-modal">
+                <h3 class="title">Comment s'est passé ce parcours ?</h3>
+
+                <div class="rating-section">
+                    <p class="subtitle">Notez votre expérience</p>
+                    <div class="star-rating" id="star-rating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="rating-label" id="rating-label">Cliquez pour noter</div>
+                </div>
+
+                <div class="comment-section">
+                    <label for="feedback-comment">Commentaire (optionnel)</label>
+                    <textarea
+                        id="feedback-comment"
+                        rows="4"
+                        placeholder="Partagez votre expérience, difficultés rencontrées, suggestions..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-cancel-feedback" class="btn btn-secondary">Passer</button>
+                    <button id="btn-submit-feedback" class="btn btn-primary" disabled>Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- V2.0: Bannière de suggestion (cachée par défaut) -->
     <div id="suggestion-banner" class="suggestion-banner" style="display: none; position: fixed; top: var(--spacing-lg); left: var(--spacing-lg); right: var(--spacing-lg); z-index: var(--z-header);">
         <div class="icon">💡</div>

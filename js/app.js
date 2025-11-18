@@ -49,6 +49,10 @@ class App {
         this.handleOnboardingBack = this.handleOnboardingBack.bind(this);
         this.handleOnboardingFinish = this.handleOnboardingFinish.bind(this);
 
+        // V2.0: Feedback handlers
+        this.handleCancelFeedback = this.handleCancelFeedback.bind(this);
+        this.handleSubmitFeedback = this.handleSubmitFeedback.bind(this);
+
         // État de l'onboarding
         this.onboardingStep = 1;
     }
@@ -118,6 +122,10 @@ class App {
         // V2.0: Suggestions
         this.ui.addEventListener(this.ui.suggestionElements.btnAccept, 'click', this.handleAcceptSuggestion);
         this.ui.addEventListener(this.ui.suggestionElements.btnDismiss, 'click', this.handleDismissSuggestion);
+
+        // V2.0: Feedback modal
+        this.ui.addEventListener(this.ui.feedbackElements.btnCancel, 'click', this.handleCancelFeedback);
+        this.ui.addEventListener(this.ui.feedbackElements.btnSubmit, 'click', this.handleSubmitFeedback);
     }
 
     /**
@@ -443,13 +451,70 @@ class App {
     handleFeedbackClick(e) {
         e.preventDefault();
 
-        // Pour V1.0, on peut simplement afficher un message
-        // En V1.1+, on pourrait ouvrir un formulaire ou une modale
-        const feedback = prompt('Comment s\'est passé ce parcours ? (optionnel)');
+        // V2.0: Afficher la modale de feedback avec notation
+        this.ui.showFeedbackModal();
+    }
 
-        if (feedback && feedback.trim() !== '') {
-            console.log('Feedback reçu:', feedback);
-            alert('Merci pour votre retour ! (Dans une future version, ce feedback sera sauvegardé)');
+    /**
+     * V2.0: Gère l'annulation du feedback
+     */
+    handleCancelFeedback(e) {
+        e.preventDefault();
+        this.ui.hideFeedbackModal();
+    }
+
+    /**
+     * V2.0: Gère la soumission du feedback
+     */
+    handleSubmitFeedback(e) {
+        e.preventDefault();
+
+        const rating = this.ui.getSelectedRating();
+        const comment = this.ui.getFeedbackComment();
+
+        if (rating === 0) {
+            console.warn('Aucune notation sélectionnée');
+            return;
+        }
+
+        console.log('✅ Feedback reçu:', { rating, comment });
+
+        // Mettre à jour la dernière session dans l'historique avec la notation
+        this.updateLastSessionWithRating(rating, comment);
+
+        // Cacher la modale
+        this.ui.hideFeedbackModal();
+
+        // Optionnel : Afficher un message de confirmation
+        console.log(`Merci pour votre notation de ${rating}/5 !`);
+    }
+
+    /**
+     * V2.0: Met à jour la dernière session avec la notation utilisateur
+     * @param {number} rating Note de 1 à 5
+     * @param {string} comment Commentaire optionnel
+     */
+    updateLastSessionWithRating(rating, comment) {
+        const history = this.storage.getParcoursHistory();
+
+        if (history.length > 0) {
+            const lastSession = history[0];
+
+            // Ajouter/mettre à jour la notation
+            if (!lastSession.outcome) {
+                lastSession.outcome = {};
+            }
+
+            lastSession.outcome.userRating = rating;
+
+            if (comment) {
+                lastSession.outcome.userComment = comment;
+            }
+
+            // Sauvegarder l'historique mis à jour
+            this.storage.set(this.storage.KEYS.PARCOURS_HISTORY, history);
+
+            console.log('📊 Session mise à jour avec notation:', rating);
         }
     }
 
