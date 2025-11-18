@@ -52,6 +52,20 @@ class App {
         this.handleOnboardingBack = this.handleOnboardingBack.bind(this);
         this.handleOnboardingFinish = this.handleOnboardingFinish.bind(this);
 
+        // V2.0: Feedback handlers
+        this.handleCancelFeedback = this.handleCancelFeedback.bind(this);
+        this.handleSubmitFeedback = this.handleSubmitFeedback.bind(this);
+
+        // V2.0: Settings handlers
+        this.handleSettingsClick = this.handleSettingsClick.bind(this);
+        this.handleSettingsBackClick = this.handleSettingsBackClick.bind(this);
+        this.handleToggleSuggestions = this.handleToggleSuggestions.bind(this);
+        this.handleEditParcours = this.handleEditParcours.bind(this);
+        this.handleEditDuration = this.handleEditDuration.bind(this);
+        this.handleResetOnboarding = this.handleResetOnboarding.bind(this);
+        this.handleClearHistory = this.handleClearHistory.bind(this);
+        this.handleResetAll = this.handleResetAll.bind(this);
+
         // État de l'onboarding
         this.onboardingStep = 1;
     }
@@ -126,6 +140,20 @@ class App {
         // V2.0: Suggestions
         this.ui.addEventListener(this.ui.suggestionElements.btnAccept, 'click', this.handleAcceptSuggestion);
         this.ui.addEventListener(this.ui.suggestionElements.btnDismiss, 'click', this.handleDismissSuggestion);
+
+        // V2.0: Feedback modal
+        this.ui.addEventListener(this.ui.feedbackElements.btnCancel, 'click', this.handleCancelFeedback);
+        this.ui.addEventListener(this.ui.feedbackElements.btnSubmit, 'click', this.handleSubmitFeedback);
+
+        // V2.0: Settings
+        this.ui.addEventListener(this.ui.settingsElements.btnSettings, 'click', this.handleSettingsClick);
+        this.ui.addEventListener(this.ui.settingsElements.btnSettingsBack, 'click', this.handleSettingsBackClick);
+        this.ui.addEventListener(this.ui.settingsElements.toggleSuggestions, 'change', this.handleToggleSuggestions);
+        this.ui.addEventListener(this.ui.settingsElements.btnEditParcours, 'click', this.handleEditParcours);
+        this.ui.addEventListener(this.ui.settingsElements.btnEditDuration, 'click', this.handleEditDuration);
+        this.ui.addEventListener(this.ui.settingsElements.btnResetOnboarding, 'click', this.handleResetOnboarding);
+        this.ui.addEventListener(this.ui.settingsElements.btnClearHistory, 'click', this.handleClearHistory);
+        this.ui.addEventListener(this.ui.settingsElements.btnResetAll, 'click', this.handleResetAll);
     }
 
     /**
@@ -478,13 +506,70 @@ class App {
     handleFeedbackClick(e) {
         e.preventDefault();
 
-        // Pour V1.0, on peut simplement afficher un message
-        // En V1.1+, on pourrait ouvrir un formulaire ou une modale
-        const feedback = prompt('Comment s\'est passé ce parcours ? (optionnel)');
+        // V2.0: Afficher la modale de feedback avec notation
+        this.ui.showFeedbackModal();
+    }
 
-        if (feedback && feedback.trim() !== '') {
-            console.log('Feedback reçu:', feedback);
-            alert('Merci pour votre retour ! (Dans une future version, ce feedback sera sauvegardé)');
+    /**
+     * V2.0: Gère l'annulation du feedback
+     */
+    handleCancelFeedback(e) {
+        e.preventDefault();
+        this.ui.hideFeedbackModal();
+    }
+
+    /**
+     * V2.0: Gère la soumission du feedback
+     */
+    handleSubmitFeedback(e) {
+        e.preventDefault();
+
+        const rating = this.ui.getSelectedRating();
+        const comment = this.ui.getFeedbackComment();
+
+        if (rating === 0) {
+            console.warn('Aucune notation sélectionnée');
+            return;
+        }
+
+        console.log('✅ Feedback reçu:', { rating, comment });
+
+        // Mettre à jour la dernière session dans l'historique avec la notation
+        this.updateLastSessionWithRating(rating, comment);
+
+        // Cacher la modale
+        this.ui.hideFeedbackModal();
+
+        // Optionnel : Afficher un message de confirmation
+        console.log(`Merci pour votre notation de ${rating}/5 !`);
+    }
+
+    /**
+     * V2.0: Met à jour la dernière session avec la notation utilisateur
+     * @param {number} rating Note de 1 à 5
+     * @param {string} comment Commentaire optionnel
+     */
+    updateLastSessionWithRating(rating, comment) {
+        const history = this.storage.getParcoursHistory();
+
+        if (history.length > 0) {
+            const lastSession = history[0];
+
+            // Ajouter/mettre à jour la notation
+            if (!lastSession.outcome) {
+                lastSession.outcome = {};
+            }
+
+            lastSession.outcome.userRating = rating;
+
+            if (comment) {
+                lastSession.outcome.userComment = comment;
+            }
+
+            // Sauvegarder l'historique mis à jour
+            this.storage.set(this.storage.KEYS.PARCOURS_HISTORY, history);
+
+            console.log('📊 Session mise à jour avec notation:', rating);
         }
     }
 
@@ -791,6 +876,141 @@ class App {
         // Aller à l'écran d'accueil
         this.checkForActiveSession();
         this.showHome();
+    }
+
+    // ==========================================
+    // V2.0: Settings Handlers
+    // ==========================================
+
+    /**
+     * Gère le clic sur le bouton Paramètres
+     */
+    handleSettingsClick(e) {
+        e.preventDefault();
+        this.ui.showSettings(this.storage);
+    }
+
+    /**
+     * Gère le retour depuis l'écran de paramètres
+     */
+    handleSettingsBackClick(e) {
+        e.preventDefault();
+        this.showHome();
+    }
+
+    /**
+     * Gère le toggle des suggestions
+     */
+    handleToggleSuggestions(e) {
+        const enabled = e.target.checked;
+        this.storage.updatePreference('showSuggestions', enabled);
+        this.ui.settingsElements.suggestionsValue.textContent = enabled ? 'Activé' : 'Désactivé';
+        console.log(`✅ Suggestions ${enabled ? 'activées' : 'désactivées'}`);
+    }
+
+    /**
+     * Gère la modification des parcours favoris
+     */
+    handleEditParcours(e) {
+        e.preventDefault();
+
+        // Afficher l'étape 2 de l'onboarding (sélection des parcours)
+        this.onboardingStep = 2;
+        this.ui.showOnboarding(2);
+    }
+
+    /**
+     * Gère la modification de la durée par étape
+     */
+    handleEditDuration(e) {
+        e.preventDefault();
+
+        // Afficher l'étape 3 de l'onboarding (sélection de la durée)
+        this.onboardingStep = 3;
+        this.ui.showOnboarding(3);
+    }
+
+    /**
+     * Gère la réinitialisation de l'onboarding
+     */
+    handleResetOnboarding(e) {
+        e.preventDefault();
+
+        const confirmed = confirm(
+            '🔄 Voulez-vous refaire la configuration initiale ?\n\n' +
+            'Vous allez pouvoir redéfinir vos parcours favoris et la durée par étape.'
+        );
+
+        if (confirmed) {
+            // Marquer l'onboarding comme non complété
+            this.storage.updatePreference('onboardingCompleted', false);
+
+            console.log('🔄 Onboarding réinitialisé');
+
+            // Relancer l'onboarding
+            this.startOnboarding();
+        }
+    }
+
+    /**
+     * Gère l'effacement de l'historique des sessions
+     */
+    handleClearHistory(e) {
+        e.preventDefault();
+
+        const history = this.storage.getParcoursHistory();
+
+        const confirmed = confirm(
+            `🗑️ Voulez-vous effacer l'historique des sessions ?\n\n` +
+            `${history.length} session(s) seront supprimées définitivement.\n` +
+            `Cette action est irréversible.`
+        );
+
+        if (confirmed) {
+            // Effacer l'historique
+            this.storage.set(this.storage.KEYS.PARCOURS_HISTORY, []);
+            this.storage.set(this.storage.KEYS.SESSIONS_HISTORY, []);
+
+            console.log('🗑️ Historique effacé');
+
+            // Rafraîchir l'affichage des paramètres
+            this.ui.updateSettingsValues(this.storage);
+        }
+    }
+
+    /**
+     * Gère la réinitialisation complète des données
+     */
+    handleResetAll(e) {
+        e.preventDefault();
+
+        const confirmed = confirm(
+            '⚠️ ATTENTION : Réinitialisation complète\n\n' +
+            'Cette action va effacer TOUTES vos données :\n' +
+            '• Préférences et configuration\n' +
+            '• Historique des sessions\n' +
+            '• Progression en cours\n\n' +
+            'Cette action est IRRÉVERSIBLE.\n\n' +
+            'Voulez-vous vraiment continuer ?'
+        );
+
+        if (confirmed) {
+            // Double confirmation pour une action aussi destructive
+            const doubleConfirm = confirm(
+                '⚠️ Dernière confirmation\n\n' +
+                'Êtes-vous VRAIMENT sûr(e) de vouloir tout effacer ?'
+            );
+
+            if (doubleConfirm) {
+                // Effacer tout le localStorage
+                localStorage.clear();
+
+                console.log('⚠️ Toutes les données ont été effacées');
+
+                // Recharger la page pour repartir de zéro
+                window.location.reload();
+            }
+        }
     }
 
     /**
