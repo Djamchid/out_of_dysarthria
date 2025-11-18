@@ -58,25 +58,25 @@ class ParcoursRouter {
         const options = {
             'ventricular': {
                 parcoursType: PARCOURS_TYPES.A_DETENTE,
-                name: 'Parcours A - Détente laryngée',
+                name: 'Détente laryngée',
                 description: 'Pour relâcher la tension du larynx',
                 icon: '😓'
             },
             'spasticity': {
                 parcoursType: PARCOURS_TYPES.B_RELACHEMENT,
-                name: 'Parcours B - Relâchement musculaire',
+                name: 'Relâchement musculaire',
                 description: 'Pour détendre les muscles articulatoires',
                 icon: '💪'
             },
             'fatigue': {
                 parcoursType: PARCOURS_TYPES.C_ECONOMIE,
-                name: 'Parcours C - Mode économie',
+                name: 'Mode économie',
                 description: 'Pour récupérer avec effort minimal',
                 icon: '😴'
             },
             'unknown': {
                 parcoursType: PARCOURS_TYPES.D_MODIFIE,
-                name: 'Parcours D - Standard modifié',
+                name: 'Standard modifié',
                 description: 'Progression douce et alternative',
                 icon: '🌀'
             }
@@ -97,7 +97,7 @@ class ParcoursRouter {
                 name: 'Bandes ventriculaires',
                 description: 'Vibrations parasites',
                 icon: '😓',
-                parcours: 'Parcours A - Détente laryngée'
+                parcours: 'Détente laryngée'
             },
             {
                 id: 'spasticity',
@@ -105,7 +105,7 @@ class ParcoursRouter {
                 name: 'Spasticité musculaire',
                 description: 'Muscles trop tendus',
                 icon: '💪',
-                parcours: 'Parcours B - Relâchement musculaire'
+                parcours: 'Relâchement musculaire'
             },
             {
                 id: 'fatigue',
@@ -113,7 +113,7 @@ class ParcoursRouter {
                 name: 'Fatigue importante',
                 description: 'Manque d\'énergie',
                 icon: '😴',
-                parcours: 'Parcours C - Mode économie'
+                parcours: 'Mode économie'
             },
             {
                 id: 'unknown',
@@ -121,7 +121,7 @@ class ParcoursRouter {
                 name: 'Autre / Ne sais pas',
                 description: 'Parcours standard modifié',
                 icon: '🌀',
-                parcours: 'Parcours D - Standard modifié'
+                parcours: 'Standard modifié'
             }
         ];
     }

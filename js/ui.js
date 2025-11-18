@@ -620,10 +620,10 @@ class UI {
         // Charger les parcours favoris
         const favoriteParcours = preferences.favoriteParcours || [];
         document.getElementById('pref-standard').checked = favoriteParcours.includes('standard');
-        document.getElementById('pref-a').checked = favoriteParcours.includes('A');
-        document.getElementById('pref-b').checked = favoriteParcours.includes('B');
-        document.getElementById('pref-c').checked = favoriteParcours.includes('C');
-        document.getElementById('pref-d').checked = favoriteParcours.includes('D');
+        document.getElementById('pref-detente').checked = favoriteParcours.includes('detente-laryngee');
+        document.getElementById('pref-relachement').checked = favoriteParcours.includes('relachement-musculaire');
+        document.getElementById('pref-economie').checked = favoriteParcours.includes('mode-economie');
+        document.getElementById('pref-modifie').checked = favoriteParcours.includes('standard-modifie');
 
         // Charger la durée par défaut
         const duration = preferences.defaultStepDuration || 30;
@@ -645,10 +645,10 @@ class UI {
         // Parcours favoris
         const favoriteParcours = [];
         if (document.getElementById('pref-standard').checked) favoriteParcours.push('standard');
-        if (document.getElementById('pref-a').checked) favoriteParcours.push('A');
-        if (document.getElementById('pref-b').checked) favoriteParcours.push('B');
-        if (document.getElementById('pref-c').checked) favoriteParcours.push('C');
-        if (document.getElementById('pref-d').checked) favoriteParcours.push('D');
+        if (document.getElementById('pref-detente').checked) favoriteParcours.push('detente-laryngee');
+        if (document.getElementById('pref-relachement').checked) favoriteParcours.push('relachement-musculaire');
+        if (document.getElementById('pref-economie').checked) favoriteParcours.push('mode-economie');
+        if (document.getElementById('pref-modifie').checked) favoriteParcours.push('standard-modifie');
 
         // Durée par étape
         const durationRadio = document.querySelector('input[name="step-duration"]:checked');
@@ -719,13 +719,13 @@ class UI {
                         <label class="parcours-checkbox">
                             <input type="checkbox" name="parcours" value="standard" checked>
                             <div class="content">
-                                <div class="name">Parcours Standard</div>
+                                <div class="name">Standard</div>
                                 <div class="description">Parcours complet de récupération vocale</div>
                             </div>
                         </label>
 
                         <label class="parcours-checkbox">
-                            <input type="checkbox" name="parcours" value="A">
+                            <input type="checkbox" name="parcours" value="detente-laryngee">
                             <div class="content">
                                 <div class="name">😓 Détente laryngée</div>
                                 <div class="description">Pour les bandes ventriculaires (vibrations parasites)</div>
@@ -733,7 +733,7 @@ class UI {
                         </label>
 
                         <label class="parcours-checkbox">
-                            <input type="checkbox" name="parcours" value="B">
+                            <input type="checkbox" name="parcours" value="relachement-musculaire">
                             <div class="content">
                                 <div class="name">💪 Relâchement musculaire</div>
                                 <div class="description">Pour la spasticité musculaire (muscles trop tendus)</div>
@@ -741,7 +741,7 @@ class UI {
                         </label>
 
                         <label class="parcours-checkbox">
-                            <input type="checkbox" name="parcours" value="C">
+                            <input type="checkbox" name="parcours" value="mode-economie">
                             <div class="content">
                                 <div class="name">😴 Mode économie</div>
                                 <div class="description">Pour la fatigue importante (manque d'énergie)</div>
@@ -971,11 +971,8 @@ class UI {
         // Parcours favoris
         if (this.settingsElements.parcoursValue) {
             const parcoursNames = prefs.favoriteParcours.map(p => {
-                if (p === 'standard') return 'Standard';
-                if (p === 'A') return 'Détente laryngée';
-                if (p === 'B') return 'Relâchement musculaire';
-                if (p === 'C') return 'Mode économie';
-                return p;
+                const metadata = PARCOURS_METADATA[p];
+                return metadata ? metadata.name : p;
             });
             this.settingsElements.parcoursValue.textContent = parcoursNames.join(', ');
         }
