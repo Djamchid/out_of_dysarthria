@@ -565,6 +565,159 @@ class UI {
         return `<span class="parcours-badge parcours-${parcoursType}">${metadata.name}</span>`;
     }
 
+    // ==========================================
+    // V2.0: Onboarding Wizard
+    // ==========================================
+
+    /**
+     * Affiche l'écran d'onboarding
+     * @param {number} step Numéro de l'étape (1, 2, ou 3)
+     */
+    showOnboarding(step = 1) {
+        this.showScreen('onboarding');
+        this.renderOnboardingStep(step);
+    }
+
+    /**
+     * Génère le contenu d'une étape d'onboarding
+     * @param {number} step
+     */
+    renderOnboardingStep(step) {
+        const content = this.onboardingElements.content;
+        if (!content) return;
+
+        let html = '';
+
+        if (step === 1) {
+            // Étape 1: Bienvenue
+            html = `
+                <div class="onboarding-welcome">
+                    <div class="icon">🎙️</div>
+                    <h2 class="title">Bienvenue sur Out of Dysarthria !</h2>
+                    <p class="description">
+                        Cette application vous aide à retrouver votre voix
+                        lors des épisodes de dysarthrie grâce à des parcours
+                        adaptés et intelligents.
+                    </p>
+                    <div class="onboarding-actions">
+                        <button id="btn-onboarding-start" class="btn btn-primary">
+                            Commencer la configuration
+                        </button>
+                        <button id="btn-onboarding-skip" class="btn btn-text">
+                            J'ai déjà utilisé l'app
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else if (step === 2) {
+            // Étape 2: Sélection des parcours favoris
+            html = `
+                <div class="onboarding-parcours">
+                    <h2 class="title">Sélectionnez vos parcours favoris</h2>
+                    <p class="subtitle">Vous pourrez changer ces préférences plus tard</p>
+
+                    <div class="parcours-options">
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="standard" checked>
+                            <div class="content">
+                                <div class="name">Parcours Standard</div>
+                                <div class="description">Parcours complet de récupération vocale</div>
+                            </div>
+                        </label>
+
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="A">
+                            <div class="content">
+                                <div class="name">😓 Détente laryngée</div>
+                                <div class="description">Pour les bandes ventriculaires (vibrations parasites)</div>
+                            </div>
+                        </label>
+
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="B">
+                            <div class="content">
+                                <div class="name">💪 Relâchement musculaire</div>
+                                <div class="description">Pour la spasticité musculaire (muscles trop tendus)</div>
+                            </div>
+                        </label>
+
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="C">
+                            <div class="content">
+                                <div class="name">😴 Mode économie</div>
+                                <div class="description">Pour la fatigue importante (manque d'énergie)</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="onboarding-actions">
+                        <button id="btn-onboarding-next" class="btn btn-primary">Suivant</button>
+                        <button id="btn-onboarding-back" class="btn btn-secondary">Retour</button>
+                    </div>
+                </div>
+            `;
+        } else if (step === 3) {
+            // Étape 3: Durée par étape
+            html = `
+                <div class="onboarding-duration">
+                    <h2 class="title">Temps par défaut pour chaque étape</h2>
+                    <p class="subtitle">Vous pourrez toujours répéter ou passer chaque étape</p>
+
+                    <div class="duration-options">
+                        <label class="duration-radio">
+                            <input type="radio" name="duration" value="20">
+                            <div class="content">
+                                <div class="name">⚡ Rapide</div>
+                                <div class="description">15-20 secondes par étape</div>
+                            </div>
+                        </label>
+
+                        <label class="duration-radio">
+                            <input type="radio" name="duration" value="30" checked>
+                            <div class="content">
+                                <div class="name">✓ Normal</div>
+                                <div class="description">30 secondes par étape (recommandé)</div>
+                            </div>
+                        </label>
+
+                        <label class="duration-radio">
+                            <input type="radio" name="duration" value="60">
+                            <div class="content">
+                                <div class="name">🐢 Lent</div>
+                                <div class="description">60 secondes par étape</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="onboarding-actions">
+                        <button id="btn-onboarding-finish" class="btn btn-primary">Terminer</button>
+                        <button id="btn-onboarding-back" class="btn btn-secondary">Retour</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        content.innerHTML = html;
+    }
+
+    /**
+     * Récupère les parcours sélectionnés dans l'onboarding
+     * @returns {Array<string>}
+     */
+    getSelectedParcours() {
+        const checkboxes = document.querySelectorAll('input[name="parcours"]:checked');
+        return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    /**
+     * Récupère la durée sélectionnée dans l'onboarding
+     * @returns {number}
+     */
+    getSelectedDuration() {
+        const radio = document.querySelector('input[name="duration"]:checked');
+        return radio ? parseInt(radio.value) : 30;
+    }
+
     /**
      * Initialise l'interface utilisateur
      */

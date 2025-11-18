@@ -41,6 +41,16 @@ class App {
         this.handleStatsBackClick = this.handleStatsBackClick.bind(this);
         this.handleAcceptSuggestion = this.handleAcceptSuggestion.bind(this);
         this.handleDismissSuggestion = this.handleDismissSuggestion.bind(this);
+
+        // V2.0: Onboarding handlers
+        this.handleOnboardingStart = this.handleOnboardingStart.bind(this);
+        this.handleOnboardingSkip = this.handleOnboardingSkip.bind(this);
+        this.handleOnboardingNext = this.handleOnboardingNext.bind(this);
+        this.handleOnboardingBack = this.handleOnboardingBack.bind(this);
+        this.handleOnboardingFinish = this.handleOnboardingFinish.bind(this);
+
+        // État de l'onboarding
+        this.onboardingStep = 1;
     }
 
     /**
@@ -58,11 +68,17 @@ class App {
         // Configurer les écouteurs d'événements
         this.setupEventListeners();
 
-        // Vérifier s'il y a une session en cours
-        this.checkForActiveSession();
+        // V2.0: Vérifier si l'onboarding doit être affiché
+        const prefs = this.storage.getPreferences();
+        if (!prefs.onboardingCompleted) {
+            this.startOnboarding();
+        } else {
+            // Vérifier s'il y a une session en cours
+            this.checkForActiveSession();
 
-        // Afficher l'écran d'accueil
-        this.showHome();
+            // Afficher l'écran d'accueil
+            this.showHome();
+        }
 
         console.log('✅ Application initialisée');
     }
@@ -554,6 +570,111 @@ class App {
         }
 
         this.ui.hideSuggestion();
+    }
+
+    // ==========================================
+    // V2.0: Onboarding
+    // ==========================================
+
+    /**
+     * Démarre le processus d'onboarding
+     */
+    startOnboarding() {
+        this.onboardingStep = 1;
+        this.ui.showOnboarding(1);
+        this.setupOnboardingListeners();
+    }
+
+    /**
+     * Configure les écouteurs pour l'onboarding
+     */
+    setupOnboardingListeners() {
+        // Utiliser une délégation d'événements pour les boutons qui sont créés dynamiquement
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'btn-onboarding-start') {
+                this.handleOnboardingStart(e);
+            } else if (e.target.id === 'btn-onboarding-skip') {
+                this.handleOnboardingSkip(e);
+            } else if (e.target.id === 'btn-onboarding-next') {
+                this.handleOnboardingNext(e);
+            } else if (e.target.id === 'btn-onboarding-back') {
+                this.handleOnboardingBack(e);
+            } else if (e.target.id === 'btn-onboarding-finish') {
+                this.handleOnboardingFinish(e);
+            }
+        });
+    }
+
+    /**
+     * Gère le clic sur "Commencer la configuration"
+     */
+    handleOnboardingStart(e) {
+        e.preventDefault();
+        this.onboardingStep = 2;
+        this.ui.showOnboarding(2);
+    }
+
+    /**
+     * Gère le clic sur "J'ai déjà utilisé l'app" (skip)
+     */
+    handleOnboardingSkip(e) {
+        e.preventDefault();
+
+        // Marquer l'onboarding comme complété avec les valeurs par défaut
+        this.storage.updatePreference('onboardingCompleted', true);
+
+        // Aller à l'accueil
+        this.checkForActiveSession();
+        this.showHome();
+    }
+
+    /**
+     * Gère le clic sur "Suivant" (étape 2 -> 3)
+     */
+    handleOnboardingNext(e) {
+        e.preventDefault();
+
+        if (this.onboardingStep === 2) {
+            // Sauvegarder les parcours sélectionnés
+            const selectedParcours = this.ui.getSelectedParcours();
+            this.storage.updatePreference('favoriteParcours', selectedParcours);
+
+            // Passer à l'étape 3
+            this.onboardingStep = 3;
+            this.ui.showOnboarding(3);
+        }
+    }
+
+    /**
+     * Gère le clic sur "Retour"
+     */
+    handleOnboardingBack(e) {
+        e.preventDefault();
+
+        if (this.onboardingStep > 1) {
+            this.onboardingStep--;
+            this.ui.showOnboarding(this.onboardingStep);
+        }
+    }
+
+    /**
+     * Gère le clic sur "Terminer" (fin de l'onboarding)
+     */
+    handleOnboardingFinish(e) {
+        e.preventDefault();
+
+        // Sauvegarder la durée par défaut
+        const selectedDuration = this.ui.getSelectedDuration();
+        this.storage.updatePreference('defaultStepDuration', selectedDuration);
+
+        // Marquer l'onboarding comme complété
+        this.storage.updatePreference('onboardingCompleted', true);
+
+        console.log('✅ Onboarding terminé');
+
+        // Aller à l'écran d'accueil
+        this.checkForActiveSession();
+        this.showHome();
     }
 
     /**
