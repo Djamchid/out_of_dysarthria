@@ -57,6 +57,13 @@ class UI {
             statsContent: document.getElementById('stats-content')
         };
 
+        this.settingsElements = {
+            btnSettings: document.getElementById('btn-settings'),
+            btnSettingsBack: document.getElementById('btn-settings-back'),
+            btnSaveSettings: document.getElementById('btn-save-settings'),
+            settingsContent: document.getElementById('settings-content')
+        };
+
         this.diagnosticElements = {
             modal: document.getElementById('modal-diagnostic'),
             options: document.getElementById('diagnostic-options'),
@@ -575,6 +582,15 @@ class UI {
 
                 html += `</div>`;
             }
+
+            // V2.0: Bouton d'export CSV
+            html += `
+                <div class="stats-actions" style="margin-top: var(--spacing-xl); text-align: center;">
+                    <button id="btn-export-csv" class="btn btn-secondary">
+                        📥 Exporter en CSV
+                    </button>
+                </div>
+            `;
         }
 
         this.statsElements.statsContent.innerHTML = html;
@@ -590,6 +606,62 @@ class UI {
         if (!metadata) return '';
 
         return `<span class="parcours-badge parcours-${parcoursType}">${metadata.name}</span>`;
+    }
+
+    // ==========================================
+    // V2.0: Settings Screen
+    // ==========================================
+
+    /**
+     * Charge et affiche l'écran des réglages
+     * @param {Object} preferences Préférences utilisateur
+     */
+    renderSettings(preferences) {
+        // Charger les parcours favoris
+        const favoriteParcours = preferences.favoriteParcours || [];
+        document.getElementById('pref-standard').checked = favoriteParcours.includes('standard');
+        document.getElementById('pref-a').checked = favoriteParcours.includes('A');
+        document.getElementById('pref-b').checked = favoriteParcours.includes('B');
+        document.getElementById('pref-c').checked = favoriteParcours.includes('C');
+        document.getElementById('pref-d').checked = favoriteParcours.includes('D');
+
+        // Charger la durée par défaut
+        const duration = preferences.defaultStepDuration || 30;
+        const radios = document.querySelectorAll('input[name="step-duration"]');
+        radios.forEach(radio => {
+            radio.checked = (parseInt(radio.value) === duration);
+        });
+
+        // Charger l'option de suggestions
+        const showSuggestions = preferences.showSuggestions !== false; // true par défaut
+        document.getElementById('pref-suggestions').checked = showSuggestions;
+    }
+
+    /**
+     * Récupère les valeurs du formulaire de réglages
+     * @returns {Object} Préférences
+     */
+    getSettingsFormValues() {
+        // Parcours favoris
+        const favoriteParcours = [];
+        if (document.getElementById('pref-standard').checked) favoriteParcours.push('standard');
+        if (document.getElementById('pref-a').checked) favoriteParcours.push('A');
+        if (document.getElementById('pref-b').checked) favoriteParcours.push('B');
+        if (document.getElementById('pref-c').checked) favoriteParcours.push('C');
+        if (document.getElementById('pref-d').checked) favoriteParcours.push('D');
+
+        // Durée par étape
+        const durationRadio = document.querySelector('input[name="step-duration"]:checked');
+        const defaultStepDuration = durationRadio ? parseInt(durationRadio.value) : 30;
+
+        // Suggestions
+        const showSuggestions = document.getElementById('pref-suggestions').checked;
+
+        return {
+            favoriteParcours,
+            defaultStepDuration,
+            showSuggestions
+        };
     }
 
     // ==========================================

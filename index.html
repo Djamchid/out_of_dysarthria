@@ -29,6 +29,7 @@
     <div id="screen-home" class="screen active">
         <header class="app-header">
             <h1 class="app-title">Out of Dysarthria</h1>
+            <button id="btn-settings" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: calc(var(--spacing-lg) + 80px);">⚙️ Réglages</button>
             <button id="btn-stats" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: var(--spacing-lg);">📊 Stats</button>
         </header>
 
@@ -204,89 +205,78 @@
         </main>
     </div>
 
-    <!-- V2.0: Écran de paramètres -->
+    <!-- V2.0: Écran de réglages -->
     <div id="screen-settings" class="screen">
         <header class="app-header">
             <button id="btn-settings-back" class="btn-text">← Retour</button>
-            <h1 class="app-title">Paramètres</h1>
+            <h1 class="app-title">Réglages</h1>
         </header>
 
         <main class="screen-content">
-            <div class="settings-container">
-
-                <!-- Section Préférences -->
+            <div id="settings-content" style="max-width: 600px; margin: 0 auto; padding: var(--spacing-lg);">
+                <!-- Parcours favoris -->
                 <div class="settings-section">
-                    <h2 class="settings-section-title">📝 Préférences</h2>
-
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-label">Parcours favoris</div>
-                            <div class="settings-item-value" id="settings-parcours-value">Chargement...</div>
-                        </div>
-                        <button id="btn-edit-parcours" class="btn btn-secondary">Modifier</button>
-                    </div>
-
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-label">Durée par étape</div>
-                            <div class="settings-item-value" id="settings-duration-value">30 secondes</div>
-                        </div>
-                        <button id="btn-edit-duration" class="btn btn-secondary">Modifier</button>
-                    </div>
-
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-label">Afficher les suggestions</div>
-                            <div class="settings-item-value" id="settings-suggestions-value">Activé</div>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="toggle-suggestions" checked>
-                            <span class="toggle-slider"></span>
+                    <h3 class="settings-title">Parcours favoris</h3>
+                    <p class="settings-description">Sélectionnez les parcours que vous utilisez le plus souvent</p>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-standard" value="standard">
+                            <span>Parcours Standard</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-a" value="A">
+                            <span>Parcours A - Détente laryngée</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-b" value="B">
+                            <span>Parcours B - Relâchement musculaire</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-c" value="C">
+                            <span>Parcours C - Mode économie</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-d" value="D">
+                            <span>Parcours D - Standard modifié</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Section Données -->
+                <!-- Durée par étape -->
                 <div class="settings-section">
-                    <h2 class="settings-section-title">💾 Données</h2>
-
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-label">Sessions enregistrées</div>
-                            <div class="settings-item-value" id="settings-sessions-count">0 sessions</div>
-                        </div>
-                    </div>
-
-                    <div class="settings-item">
-                        <div class="settings-item-info">
-                            <div class="settings-item-label">Espace utilisé</div>
-                            <div class="settings-item-value" id="settings-storage-size">0 Ko</div>
-                        </div>
+                    <h3 class="settings-title">Durée par défaut des étapes</h3>
+                    <p class="settings-description">Temps pour chaque exercice</p>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="step-duration" value="20">
+                            <span>Rapide (15-20s)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="step-duration" value="30">
+                            <span>Normal (30s) - Recommandé</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="step-duration" value="60">
+                            <span>Lent (60s)</span>
+                        </label>
                     </div>
                 </div>
 
-                <!-- Section Actions -->
+                <!-- Suggestions -->
                 <div class="settings-section">
-                    <h2 class="settings-section-title">⚠️ Actions</h2>
-
-                    <button id="btn-reset-onboarding" class="btn btn-secondary btn-full-width">
-                        🔄 Refaire la configuration initiale
-                    </button>
-
-                    <button id="btn-clear-history" class="btn btn-secondary btn-full-width">
-                        🗑️ Effacer l'historique des sessions
-                    </button>
-
-                    <button id="btn-reset-all" class="btn btn-danger btn-full-width">
-                        ⚠️ Réinitialiser toutes les données
-                    </button>
+                    <h3 class="settings-title">Suggestions intelligentes</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-suggestions">
+                            <span>Afficher les suggestions de parcours basées sur l'historique</span>
+                        </label>
+                    </div>
                 </div>
 
-                <!-- Version -->
-                <div class="settings-version">
-                    Version 2.0.0
+                <!-- Actions -->
+                <div class="settings-actions" style="margin-top: var(--spacing-2xl);">
+                    <button id="btn-save-settings" class="btn btn-primary">Enregistrer</button>
                 </div>
-
             </div>
         </main>
     </div>
