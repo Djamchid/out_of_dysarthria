@@ -9,7 +9,9 @@ class UI {
         this.screens = {
             home: document.getElementById('screen-home'),
             exercise: document.getElementById('screen-exercise'),
-            completion: document.getElementById('screen-completion')
+            completion: document.getElementById('screen-completion'),
+            statistics: document.getElementById('screen-statistics'),
+            onboarding: document.getElementById('screen-onboarding')
         };
 
         // Références aux éléments de l'écran d'accueil
@@ -29,7 +31,8 @@ class UI {
             stepInstruction: document.getElementById('step-instruction'),
             stepContent: document.getElementById('step-content'),
             btnDone: document.getElementById('btn-done'),
-            btnRepeat: document.getElementById('btn-repeat')
+            btnRepeat: document.getElementById('btn-repeat'),
+            btnNotWorking: document.getElementById('btn-not-working')
         };
 
         // Références aux éléments de l'écran de complétion
@@ -45,6 +48,34 @@ class UI {
             btnConfirm: document.getElementById('btn-confirm-abandon'),
             btnCancel: document.getElementById('btn-cancel-abandon')
         };
+
+        // V2.0: Références aux nouveaux éléments
+        this.statsElements = {
+            btnStats: document.getElementById('btn-stats'),
+            btnStatsBack: document.getElementById('btn-stats-back'),
+            statsContent: document.getElementById('stats-content')
+        };
+
+        this.diagnosticElements = {
+            modal: document.getElementById('modal-diagnostic'),
+            options: document.getElementById('diagnostic-options'),
+            btnCancel: document.getElementById('btn-cancel-diagnostic'),
+            btnConfirm: document.getElementById('btn-confirm-diagnostic')
+        };
+
+        this.suggestionElements = {
+            banner: document.getElementById('suggestion-banner'),
+            text: document.getElementById('suggestion-text'),
+            btnAccept: document.getElementById('btn-accept-suggestion'),
+            btnDismiss: document.getElementById('btn-dismiss-suggestion')
+        };
+
+        this.onboardingElements = {
+            content: document.getElementById('onboarding-content')
+        };
+
+        // V2.0: État de sélection
+        this.selectedBlockage = null;
     }
 
     /**
@@ -348,6 +379,343 @@ class UI {
                 });
             }
         }
+    }
+
+    // ==========================================
+    // V2.0: Nouvelles méthodes
+    // ==========================================
+
+    /**
+     * Affiche le menu de diagnostic
+     */
+    showDiagnosticMenu() {
+        if (!this.diagnosticElements.modal) return;
+
+        this.diagnosticElements.modal.style.display = 'block';
+        this.selectedBlockage = null;
+
+        // Réinitialiser les sélections
+        const options = this.diagnosticElements.options?.querySelectorAll('.diagnostic-option');
+        options?.forEach(opt => opt.classList.remove('selected'));
+
+        // Désactiver le bouton de confirmation
+        if (this.diagnosticElements.btnConfirm) {
+            this.diagnosticElements.btnConfirm.disabled = true;
+        }
+
+        // Configurer les clics sur les options
+        options?.forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                options.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                this.selectedBlockage = opt.dataset.blockage;
+
+                if (this.diagnosticElements.btnConfirm) {
+                    this.diagnosticElements.btnConfirm.disabled = false;
+                }
+            });
+        });
+    }
+
+    /**
+     * Cache le menu de diagnostic
+     */
+    hideDiagnosticMenu() {
+        if (this.diagnosticElements.modal) {
+            this.diagnosticElements.modal.style.display = 'none';
+        }
+    }
+
+    /**
+     * Obtient le blocage sélectionné
+     * @returns {string|null}
+     */
+    getSelectedBlockage() {
+        return this.selectedBlockage;
+    }
+
+    /**
+     * Affiche une suggestion
+     * @param {Object} suggestion
+     */
+    showSuggestion(suggestion) {
+        if (!this.suggestionElements.banner || !this.suggestionElements.text) return;
+
+        this.suggestionElements.text.textContent = suggestion.reason || suggestion.message;
+        this.suggestionElements.banner.style.display = 'flex';
+
+        // Stocker la suggestion pour utilisation ultérieure
+        this.currentSuggestion = suggestion;
+    }
+
+    /**
+     * Cache la bannière de suggestion
+     */
+    hideSuggestion() {
+        if (this.suggestionElements.banner) {
+            this.suggestionElements.banner.style.display = 'none';
+        }
+        this.currentSuggestion = null;
+    }
+
+    /**
+     * Obtient la suggestion actuelle
+     * @returns {Object|null}
+     */
+    getCurrentSuggestion() {
+        return this.currentSuggestion || null;
+    }
+
+    /**
+     * Affiche l'écran de statistiques
+     * @param {Object} stats Données statistiques
+     */
+    renderStatistics(stats) {
+        if (!this.statsElements.statsContent) return;
+
+        let html = '';
+
+        if (!stats.hasData) {
+            html = `
+                <div class="stats-card">
+                    <p style="text-align: center; color: var(--text-secondary);">
+                        Aucune session enregistrée pour le moment.
+                    </p>
+                    <p style="text-align: center; margin-top: var(--spacing-md);">
+                        Commencez un parcours pour voir vos statistiques !
+                    </p>
+                </div>
+            `;
+        } else {
+            // Carte des statistiques globales
+            html += `
+                <div class="stats-card">
+                    <div class="title">📊 Vue d'ensemble</div>
+                    <div class="stat-item">
+                        <span class="stat-label">Sessions complétées</span>
+                        <span class="stat-value">${stats.global.completedSessions}/${stats.global.totalSessions}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Taux de réussite</span>
+                        <span class="stat-value">${stats.global.successRate}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Durée moyenne</span>
+                        <span class="stat-value">${Math.floor(stats.global.averageDuration / 60)} min</span>
+                    </div>
+                </div>
+            `;
+
+            // Parcours les plus efficaces
+            if (stats.parcours && stats.parcours.length > 0) {
+                html += `
+                    <div class="stats-card">
+                        <div class="title">🎯 Parcours les plus utilisés</div>
+                        <ul class="parcours-list">
+                `;
+
+                stats.parcours.slice(0, 3).forEach((p, i) => {
+                    html += `
+                        <li class="parcours-list-item">
+                            <span class="number">${i + 1}.</span>
+                            <span class="name">${p.name}</span>
+                            <span class="count">(${p.count} fois)</span>
+                        </li>
+                    `;
+                });
+
+                html += `
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Blocages fréquents
+            if (stats.blockages && stats.blockages.length > 0) {
+                html += `
+                    <div class="stats-card">
+                        <div class="title">⚠️ Blocages fréquents</div>
+                `;
+
+                stats.blockages.forEach(b => {
+                    html += `
+                        <div class="stat-item">
+                            <span class="stat-label">${b.name}</span>
+                            <span class="stat-value">${b.percentage}%</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            }
+        }
+
+        this.statsElements.statsContent.innerHTML = html;
+    }
+
+    /**
+     * Affiche un badge de parcours
+     * @param {string} parcoursType
+     * @returns {string} HTML du badge
+     */
+    renderParcoursBadge(parcoursType) {
+        const metadata = PARCOURS_METADATA[parcoursType];
+        if (!metadata) return '';
+
+        return `<span class="parcours-badge parcours-${parcoursType}">${metadata.name}</span>`;
+    }
+
+    // ==========================================
+    // V2.0: Onboarding Wizard
+    // ==========================================
+
+    /**
+     * Affiche l'écran d'onboarding
+     * @param {number} step Numéro de l'étape (1, 2, ou 3)
+     */
+    showOnboarding(step = 1) {
+        this.showScreen('onboarding');
+        this.renderOnboardingStep(step);
+    }
+
+    /**
+     * Génère le contenu d'une étape d'onboarding
+     * @param {number} step
+     */
+    renderOnboardingStep(step) {
+        const content = this.onboardingElements.content;
+        if (!content) return;
+
+        let html = '';
+
+        if (step === 1) {
+            // Étape 1: Bienvenue
+            html = `
+                <div class="onboarding-welcome">
+                    <div class="icon">🎙️</div>
+                    <h2 class="title">Bienvenue sur Out of Dysarthria !</h2>
+                    <p class="description">
+                        Cette application vous aide à retrouver votre voix
+                        lors des épisodes de dysarthrie grâce à des parcours
+                        adaptés et intelligents.
+                    </p>
+                    <div class="onboarding-actions">
+                        <button id="btn-onboarding-start" class="btn btn-primary">
+                            Commencer la configuration
+                        </button>
+                        <button id="btn-onboarding-skip" class="btn btn-text">
+                            J'ai déjà utilisé l'app
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else if (step === 2) {
+            // Étape 2: Sélection des parcours favoris
+            html = `
+                <div class="onboarding-parcours">
+                    <h2 class="title">Sélectionnez vos parcours favoris</h2>
+                    <p class="subtitle">Vous pourrez changer ces préférences plus tard</p>
+
+                    <div class="parcours-options">
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="standard" checked>
+                            <div class="content">
+                                <div class="name">Parcours Standard</div>
+                                <div class="description">Parcours complet de récupération vocale</div>
+                            </div>
+                        </label>
+
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="A">
+                            <div class="content">
+                                <div class="name">😓 Détente laryngée</div>
+                                <div class="description">Pour les bandes ventriculaires (vibrations parasites)</div>
+                            </div>
+                        </label>
+
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="B">
+                            <div class="content">
+                                <div class="name">💪 Relâchement musculaire</div>
+                                <div class="description">Pour la spasticité musculaire (muscles trop tendus)</div>
+                            </div>
+                        </label>
+
+                        <label class="parcours-checkbox">
+                            <input type="checkbox" name="parcours" value="C">
+                            <div class="content">
+                                <div class="name">😴 Mode économie</div>
+                                <div class="description">Pour la fatigue importante (manque d'énergie)</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="onboarding-actions">
+                        <button id="btn-onboarding-next" class="btn btn-primary">Suivant</button>
+                        <button id="btn-onboarding-back" class="btn btn-secondary">Retour</button>
+                    </div>
+                </div>
+            `;
+        } else if (step === 3) {
+            // Étape 3: Durée par étape
+            html = `
+                <div class="onboarding-duration">
+                    <h2 class="title">Temps par défaut pour chaque étape</h2>
+                    <p class="subtitle">Vous pourrez toujours répéter ou passer chaque étape</p>
+
+                    <div class="duration-options">
+                        <label class="duration-radio">
+                            <input type="radio" name="duration" value="20">
+                            <div class="content">
+                                <div class="name">⚡ Rapide</div>
+                                <div class="description">15-20 secondes par étape</div>
+                            </div>
+                        </label>
+
+                        <label class="duration-radio">
+                            <input type="radio" name="duration" value="30" checked>
+                            <div class="content">
+                                <div class="name">✓ Normal</div>
+                                <div class="description">30 secondes par étape (recommandé)</div>
+                            </div>
+                        </label>
+
+                        <label class="duration-radio">
+                            <input type="radio" name="duration" value="60">
+                            <div class="content">
+                                <div class="name">🐢 Lent</div>
+                                <div class="description">60 secondes par étape</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="onboarding-actions">
+                        <button id="btn-onboarding-finish" class="btn btn-primary">Terminer</button>
+                        <button id="btn-onboarding-back" class="btn btn-secondary">Retour</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        content.innerHTML = html;
+    }
+
+    /**
+     * Récupère les parcours sélectionnés dans l'onboarding
+     * @returns {Array<string>}
+     */
+    getSelectedParcours() {
+        const checkboxes = document.querySelectorAll('input[name="parcours"]:checked');
+        return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    /**
+     * Récupère la durée sélectionnée dans l'onboarding
+     * @returns {number}
+     */
+    getSelectedDuration() {
+        const radio = document.querySelector('input[name="duration"]:checked');
+        return radio ? parseInt(radio.value) : 30;
     }
 
     /**

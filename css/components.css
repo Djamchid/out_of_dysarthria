@@ -227,6 +227,504 @@
 }
 
 /* ============================================
+   V2.0: NOUVEAUX COMPOSANTS
+   ============================================ */
+
+/* Badge de parcours */
+.parcours-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    gap: var(--spacing-xs);
+}
+
+.parcours-badge.parcours-standard {
+    background-color: rgba(44, 62, 80, 0.1);
+    color: var(--parcours-standard);
+}
+
+.parcours-badge.parcours-a {
+    background-color: var(--parcours-a-light);
+    color: var(--parcours-a);
+}
+
+.parcours-badge.parcours-b {
+    background-color: var(--parcours-b-light);
+    color: var(--parcours-b);
+}
+
+.parcours-badge.parcours-c {
+    background-color: var(--parcours-c-light);
+    color: var(--parcours-c);
+}
+
+.parcours-badge.parcours-d {
+    background-color: var(--parcours-d-light);
+    color: var(--parcours-d);
+}
+
+/* Bannière de suggestion */
+.suggestion-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    box-shadow: var(--shadow-md);
+}
+
+.suggestion-banner .icon {
+    font-size: var(--font-size-lg);
+}
+
+.suggestion-banner .content {
+    flex: 1;
+}
+
+.suggestion-banner .title {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-xs);
+}
+
+.suggestion-banner .description {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}
+
+.suggestion-banner .actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.suggestion-banner .btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-xs);
+    min-height: auto;
+    width: auto;
+}
+
+.suggestion-banner .btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.suggestion-banner .btn-dismiss {
+    opacity: 0.7;
+}
+
+/* Menu de diagnostic */
+.diagnostic-menu {
+    background: var(--bg-white);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.diagnostic-menu .title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.diagnostic-option {
+    background: var(--bg-gray);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.diagnostic-option:hover {
+    background: var(--bg-white);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.diagnostic-option.selected {
+    background: var(--bg-white);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.diagnostic-option .icon {
+    font-size: var(--font-size-2xl);
+    flex-shrink: 0;
+}
+
+.diagnostic-option .content {
+    flex: 1;
+}
+
+.diagnostic-option .name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.diagnostic-option .description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.diagnostic-option .parcours-name {
+    font-size: var(--font-size-xs);
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Statistiques - Carte */
+.stats-card {
+    background: var(--bg-white);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.stats-card .title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.stats-card .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stats-card .stat-item:last-child {
+    border-bottom: none;
+}
+
+.stats-card .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.stats-card .stat-value {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+/* Barre de progression simple (CSS pur) */
+.progress-bar-simple {
+    width: 100%;
+    height: 8px;
+    background-color: var(--bg-gray);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: var(--spacing-sm) 0;
+}
+
+.progress-bar-simple .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+    transition: width var(--transition-normal);
+}
+
+/* Liste de parcours */
+.parcours-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.parcours-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.parcours-list-item:last-child {
+    border-bottom: none;
+}
+
+.parcours-list-item .number {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-light);
+    width: 30px;
+}
+
+.parcours-list-item .name {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.parcours-list-item .count {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Onboarding wizard */
+.onboarding-step {
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.onboarding-step .step-number {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-lg);
+}
+
+.onboarding-step .title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.onboarding-step .description {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-2xl);
+    line-height: var(--line-height-relaxed);
+}
+
+.onboarding-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.onboarding-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-gray);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.onboarding-option:hover {
+    background: var(--bg-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.onboarding-option input[type="checkbox"],
+.onboarding-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+}
+
+.onboarding-option label {
+    flex: 1;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   ONBOARDING WIZARD (V2.0)
+   ============================================ */
+
+#screen-onboarding {
+    padding: var(--spacing-2xl);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Onboarding - Bienvenue (Étape 1) */
+.onboarding-welcome {
+    text-align: center;
+}
+
+.onboarding-welcome .icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.onboarding-welcome .title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.onboarding-welcome .description {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-2xl);
+}
+
+/* Onboarding - Parcours (Étape 2) */
+.onboarding-parcours .title,
+.onboarding-duration .title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
+}
+
+.onboarding-parcours .subtitle,
+.onboarding-duration .subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Options de parcours (checkboxes) */
+.parcours-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.parcours-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-white);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.parcours-checkbox:hover {
+    border-color: var(--color-primary);
+    background: var(--bg-gray);
+}
+
+.parcours-checkbox input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.parcours-checkbox input[type="checkbox"]:checked + .content {
+    color: var(--color-primary);
+}
+
+.parcours-checkbox .content {
+    flex: 1;
+}
+
+.parcours-checkbox .name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.parcours-checkbox .description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Options de durée (radios) */
+.duration-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.duration-radio {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-white);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.duration-radio:hover {
+    border-color: var(--color-primary);
+    background: var(--bg-gray);
+}
+
+.duration-radio input[type="radio"] {
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.duration-radio input[type="radio"]:checked ~ .content {
+    color: var(--color-primary);
+}
+
+.duration-radio .content {
+    flex: 1;
+}
+
+.duration-radio .name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.duration-radio .description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Actions de l'onboarding */
+.onboarding-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .onboarding-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .onboarding-actions .btn {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 150px;
+    }
+}
+
+/* ============================================
    PRINT STYLES
    ============================================ */
 

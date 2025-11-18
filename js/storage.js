@@ -8,13 +8,19 @@ class Storage {
         this.KEYS = {
             CURRENT_SESSION: 'currentSession',
             SESSIONS_HISTORY: 'sessionsHistory',
-            PREFERENCES: 'preferences'
+            PARCOURS_HISTORY: 'parcoursHistory', // V2.0
+            PREFERENCES: 'preferences',
+            APP_VERSION: 'appVersion'
         };
 
-        this.MAX_HISTORY_LENGTH = 10;
+        this.MAX_HISTORY_LENGTH = 50; // V2.0: augmenté de 10 à 50
+        this.CURRENT_VERSION = '2.0.0';
 
         // Vérifier la disponibilité de localStorage
         this.isAvailable = this.checkAvailability();
+
+        // Effectuer la migration si nécessaire
+        this.migrateIfNeeded();
     }
 
     /**
@@ -221,7 +227,12 @@ class Storage {
     getPreferences() {
         return this.get(this.KEYS.PREFERENCES, {
             darkMode: false,
-            version: '1.0.0'
+            version: this.CURRENT_VERSION,
+            onboardingCompleted: false,
+            favoriteParcours: ['standard'],
+            defaultStepDuration: 30,
+            showSuggestions: true,
+            autoSaveInterval: 5000
         });
     }
 
@@ -332,6 +343,158 @@ class Storage {
                 year: diffDay > 365 ? 'numeric' : undefined
             });
         }
+    }
+
+    // ==========================================
+    // Méthodes V2.0 - Parcours et contexte
+    // ==========================================
+
+    /**
+     * Obtient le contexte actuel de la session
+     * @returns {Object}
+     */
+    getCurrentContext() {
+        const now = new Date();
+        const hour = now.getHours();
+        const dayOfWeek = now.getDay();
+
+        let timeOfDay;
+        if (hour >= 5 && hour < 12) {
+            timeOfDay = 'morning';
+        } else if (hour >= 12 && hour < 17) {
+            timeOfDay = 'afternoon';
+        } else if (hour >= 17 && hour < 22) {
+            timeOfDay = 'evening';
+        } else {
+            timeOfDay = 'night';
+        }
+
+        const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+        return {
+            timeOfDay,
+            dayOfWeek: daysOfWeek[dayOfWeek],
+            timestamp: now.toISOString()
+        };
+    }
+
+    /**
+     * Sauvegarde une session avec le format V2.0 enrichi
+     * @param {Object} sessionData
+     */
+    saveSessionV2(sessionData) {
+        const history = this.getParcoursHistory();
+
+        const enrichedSession = {
+            ...sessionData,
+            context: this.getCurrentContext(),
+            version: '2.0'
+        };
+
+        history.unshift(enrichedSession);
+
+        // Limiter à MAX_HISTORY_LENGTH
+        if (history.length > this.MAX_HISTORY_LENGTH) {
+            history.splice(this.MAX_HISTORY_LENGTH);
+        }
+
+        return this.set(this.KEYS.PARCOURS_HISTORY, history);
+    }
+
+    /**
+     * Récupère l'historique des parcours (V2.0)
+     * @returns {Array}
+     */
+    getParcoursHistory() {
+        return this.get(this.KEYS.PARCOURS_HISTORY, []);
+    }
+
+    /**
+     * Ajoute une session à l'historique avec enrichissement V2.0
+     * @param {Object} session
+     */
+    addToHistoryV2(session) {
+        const context = this.getCurrentContext();
+
+        const enrichedSession = {
+            ...session,
+            context,
+            version: '2.0'
+        };
+
+        return this.saveSessionV2(enrichedSession);
+    }
+
+    /**
+     * Migre les données de V1.0 vers V2.0
+     */
+    migrateV1ToV2() {
+        console.log('🔄 Migration V1.0 → V2.0...');
+
+        const oldHistory = this.get(this.KEYS.SESSIONS_HISTORY, []);
+        const newHistory = this.getParcoursHistory();
+
+        // Si l'ancien historique existe et que le nouveau est vide
+        if (oldHistory.length > 0 && newHistory.length === 0) {
+            console.log(`Migration de ${oldHistory.length} sessions...`);
+
+            const migratedSessions = oldHistory.map(session => ({
+                id: session.id,
+                startedAt: session.startedAt,
+                completedAt: session.completedAt,
+                totalDuration: session.totalDuration,
+                completed: session.completed,
+                stepsCount: session.stepsCount,
+                // Nouveaux champs V2.0
+                parcoursPath: ['standard:0-7'], // Parcours standard complet
+                blockages: [],
+                context: {
+                    timeOfDay: 'unknown',
+                    dayOfWeek: 'unknown',
+                    timestamp: session.startedAt
+                },
+                outcome: {
+                    completed: session.completed,
+                    totalDuration: session.totalDuration,
+                    userRating: null
+                },
+                version: '1.0-migrated'
+            }));
+
+            this.set(this.KEYS.PARCOURS_HISTORY, migratedSessions);
+            console.log('✅ Migration terminée');
+        }
+
+        // Mettre à jour les préférences
+        const prefs = this.getPreferences();
+        prefs.version = this.CURRENT_VERSION;
+        this.savePreferences(prefs);
+
+        // Sauvegarder la version de l'app
+        this.set(this.KEYS.APP_VERSION, this.CURRENT_VERSION);
+    }
+
+    /**
+     * Vérifie et effectue la migration si nécessaire
+     */
+    migrateIfNeeded() {
+        const appVersion = this.get(this.KEYS.APP_VERSION, '1.0.0');
+
+        if (appVersion !== this.CURRENT_VERSION) {
+            console.log(`Version détectée: ${appVersion}, version actuelle: ${this.CURRENT_VERSION}`);
+
+            if (appVersion === '1.0.0' || !appVersion) {
+                this.migrateV1ToV2();
+            }
+        }
+    }
+
+    /**
+     * Obtient la version de l'application
+     * @returns {string}
+     */
+    getAppVersion() {
+        return this.get(this.KEYS.APP_VERSION, '1.0.0');
     }
 }
 
