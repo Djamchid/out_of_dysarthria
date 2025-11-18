@@ -28,6 +28,7 @@
     <!-- Écran d'accueil -->
     <div id="screen-home" class="screen active">
         <header class="app-header">
+            <button id="btn-settings" class="btn-text" style="position: absolute; top: var(--spacing-lg); left: var(--spacing-lg);">⚙️ Paramètres</button>
             <h1 class="app-title">Out of Dysarthria</h1>
             <button id="btn-stats" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: var(--spacing-lg);">📊 Stats</button>
         </header>
@@ -90,7 +91,7 @@
                     <h3 style="font-size: 1.1rem; font-weight: 600; color: #27AE60; margin-bottom: var(--spacing-sm);">
                         ✨ Conseils pour réussir
                     </h3>
-                    <ul style="line-height: 1.8; color: var(--color-text-secondary); padding-left: var(--spacing-lg); margin: 0;">
+                    <ul style="line-height: 1.8; color: #2C3E50; padding-left: var(--spacing-lg); margin: 0;">
                         <li>Trouvez un endroit calme pour faire les exercices</li>
                         <li>Prenez votre temps, il n'y a pas de rush</li>
                         <li>Pratiquez régulièrement, même 10 minutes par jour</li>
@@ -197,6 +198,93 @@
         <main class="screen-content">
             <div id="stats-content">
                 <!-- Contenu dynamique généré par statistics.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- V2.0: Écran de paramètres -->
+    <div id="screen-settings" class="screen">
+        <header class="app-header">
+            <button id="btn-settings-back" class="btn-text">← Retour</button>
+            <h1 class="app-title">Paramètres</h1>
+        </header>
+
+        <main class="screen-content">
+            <div class="settings-container">
+
+                <!-- Section Préférences -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">📝 Préférences</h2>
+
+                    <div class="settings-item">
+                        <div class="settings-item-info">
+                            <div class="settings-item-label">Parcours favoris</div>
+                            <div class="settings-item-value" id="settings-parcours-value">Chargement...</div>
+                        </div>
+                        <button id="btn-edit-parcours" class="btn btn-secondary">Modifier</button>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-info">
+                            <div class="settings-item-label">Durée par étape</div>
+                            <div class="settings-item-value" id="settings-duration-value">30 secondes</div>
+                        </div>
+                        <button id="btn-edit-duration" class="btn btn-secondary">Modifier</button>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-info">
+                            <div class="settings-item-label">Afficher les suggestions</div>
+                            <div class="settings-item-value" id="settings-suggestions-value">Activé</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-suggestions" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section Données -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">💾 Données</h2>
+
+                    <div class="settings-item">
+                        <div class="settings-item-info">
+                            <div class="settings-item-label">Sessions enregistrées</div>
+                            <div class="settings-item-value" id="settings-sessions-count">0 sessions</div>
+                        </div>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-info">
+                            <div class="settings-item-label">Espace utilisé</div>
+                            <div class="settings-item-value" id="settings-storage-size">0 Ko</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Actions -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">⚠️ Actions</h2>
+
+                    <button id="btn-reset-onboarding" class="btn btn-secondary btn-full-width">
+                        🔄 Refaire la configuration initiale
+                    </button>
+
+                    <button id="btn-clear-history" class="btn btn-secondary btn-full-width">
+                        🗑️ Effacer l'historique des sessions
+                    </button>
+
+                    <button id="btn-reset-all" class="btn btn-danger btn-full-width">
+                        ⚠️ Réinitialiser toutes les données
+                    </button>
+                </div>
+
+                <!-- Version -->
+                <div class="settings-version">
+                    Version 2.0.0
+                </div>
+
             </div>
         </main>
     </div>

@@ -11,6 +11,7 @@ class UI {
             exercise: document.getElementById('screen-exercise'),
             completion: document.getElementById('screen-completion'),
             statistics: document.getElementById('screen-statistics'),
+            settings: document.getElementById('screen-settings'),
             onboarding: document.getElementById('screen-onboarding')
         };
 
@@ -81,6 +82,22 @@ class UI {
             comment: document.getElementById('feedback-comment'),
             btnCancel: document.getElementById('btn-cancel-feedback'),
             btnSubmit: document.getElementById('btn-submit-feedback')
+        };
+
+        this.settingsElements = {
+            btnSettings: document.getElementById('btn-settings'),
+            btnSettingsBack: document.getElementById('btn-settings-back'),
+            parcoursValue: document.getElementById('settings-parcours-value'),
+            durationValue: document.getElementById('settings-duration-value'),
+            suggestionsValue: document.getElementById('settings-suggestions-value'),
+            sessionsCount: document.getElementById('settings-sessions-count'),
+            storageSize: document.getElementById('settings-storage-size'),
+            toggleSuggestions: document.getElementById('toggle-suggestions'),
+            btnEditParcours: document.getElementById('btn-edit-parcours'),
+            btnEditDuration: document.getElementById('btn-edit-duration'),
+            btnResetOnboarding: document.getElementById('btn-reset-onboarding'),
+            btnClearHistory: document.getElementById('btn-clear-history'),
+            btnResetAll: document.getElementById('btn-reset-all')
         };
 
         // V2.0: État de sélection
@@ -856,6 +873,83 @@ class UI {
      */
     getFeedbackComment() {
         return this.feedbackElements.comment ? this.feedbackElements.comment.value.trim() : '';
+    }
+
+    // ==========================================
+    // V2.0: Settings Screen
+    // ==========================================
+
+    /**
+     * Affiche et met à jour l'écran de paramètres
+     * @param {Object} storage Instance de Storage
+     */
+    showSettings(storage) {
+        this.showScreen('settings');
+        this.updateSettingsValues(storage);
+    }
+
+    /**
+     * Met à jour les valeurs affichées dans les paramètres
+     * @param {Object} storage Instance de Storage
+     */
+    updateSettingsValues(storage) {
+        const prefs = storage.getPreferences();
+        const history = storage.getParcoursHistory();
+
+        // Parcours favoris
+        if (this.settingsElements.parcoursValue) {
+            const parcoursNames = prefs.favoriteParcours.map(p => {
+                if (p === 'standard') return 'Standard';
+                if (p === 'A') return 'Détente laryngée';
+                if (p === 'B') return 'Relâchement musculaire';
+                if (p === 'C') return 'Mode économie';
+                return p;
+            });
+            this.settingsElements.parcoursValue.textContent = parcoursNames.join(', ');
+        }
+
+        // Durée
+        if (this.settingsElements.durationValue) {
+            this.settingsElements.durationValue.textContent = `${prefs.defaultStepDuration} secondes`;
+        }
+
+        // Suggestions
+        if (this.settingsElements.toggleSuggestions) {
+            this.settingsElements.toggleSuggestions.checked = prefs.showSuggestions !== false;
+        }
+        if (this.settingsElements.suggestionsValue) {
+            this.settingsElements.suggestionsValue.textContent = prefs.showSuggestions !== false ? 'Activé' : 'Désactivé';
+        }
+
+        // Sessions
+        if (this.settingsElements.sessionsCount) {
+            this.settingsElements.sessionsCount.textContent = `${history.length} session${history.length > 1 ? 's' : ''}`;
+        }
+
+        // Taille du storage
+        if (this.settingsElements.storageSize) {
+            const size = this.calculateStorageSize();
+            this.settingsElements.storageSize.textContent = size;
+        }
+    }
+
+    /**
+     * Calcule la taille approximative du localStorage
+     * @returns {string}
+     */
+    calculateStorageSize() {
+        try {
+            let total = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    total += localStorage[key].length + key.length;
+                }
+            }
+            const kb = (total / 1024).toFixed(1);
+            return `${kb} Ko`;
+        } catch (e) {
+            return 'N/A';
+        }
     }
 
     /**
