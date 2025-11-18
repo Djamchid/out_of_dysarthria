@@ -87,6 +87,32 @@
     color: var(--color-danger-dark);
 }
 
+/* Bouton icône */
+.btn-icon {
+    background: none;
+    color: var(--text-secondary);
+    padding: var(--spacing-sm);
+    font-size: 1.5rem;
+    min-height: var(--tap-target-min);
+    min-width: var(--tap-target-min);
+    width: auto;
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background-color: var(--bg-gray);
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.btn-icon:active {
+    transform: scale(1.05);
+}
+
 /* États des boutons */
 .btn:disabled {
     opacity: 0.5;
