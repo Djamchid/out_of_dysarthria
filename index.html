@@ -29,6 +29,7 @@
     <div id="screen-home" class="screen active">
         <header class="app-header">
             <h1 class="app-title">Out of Dysarthria</h1>
+            <button id="btn-settings" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: calc(var(--spacing-lg) + 80px);">⚙️ Réglages</button>
             <button id="btn-stats" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: var(--spacing-lg);">📊 Stats</button>
         </header>
 
@@ -197,6 +198,82 @@
         <main class="screen-content">
             <div id="stats-content">
                 <!-- Contenu dynamique généré par statistics.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- V2.0: Écran de réglages -->
+    <div id="screen-settings" class="screen">
+        <header class="app-header">
+            <button id="btn-settings-back" class="btn-text">← Retour</button>
+            <h1 class="app-title">Réglages</h1>
+        </header>
+
+        <main class="screen-content">
+            <div id="settings-content" style="max-width: 600px; margin: 0 auto; padding: var(--spacing-lg);">
+                <!-- Parcours favoris -->
+                <div class="settings-section">
+                    <h3 class="settings-title">Parcours favoris</h3>
+                    <p class="settings-description">Sélectionnez les parcours que vous utilisez le plus souvent</p>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-standard" value="standard">
+                            <span>Parcours Standard</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-a" value="A">
+                            <span>Parcours A - Détente laryngée</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-b" value="B">
+                            <span>Parcours B - Relâchement musculaire</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-c" value="C">
+                            <span>Parcours C - Mode économie</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-d" value="D">
+                            <span>Parcours D - Standard modifié</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Durée par étape -->
+                <div class="settings-section">
+                    <h3 class="settings-title">Durée par défaut des étapes</h3>
+                    <p class="settings-description">Temps pour chaque exercice</p>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="step-duration" value="20">
+                            <span>Rapide (15-20s)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="step-duration" value="30">
+                            <span>Normal (30s) - Recommandé</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="step-duration" value="60">
+                            <span>Lent (60s)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Suggestions -->
+                <div class="settings-section">
+                    <h3 class="settings-title">Suggestions intelligentes</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pref-suggestions">
+                            <span>Afficher les suggestions de parcours basées sur l'historique</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="settings-actions" style="margin-top: var(--spacing-2xl);">
+                    <button id="btn-save-settings" class="btn btn-primary">Enregistrer</button>
+                </div>
             </div>
         </main>
     </div>

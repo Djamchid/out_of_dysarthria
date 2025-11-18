@@ -39,6 +39,9 @@ class App {
         this.handleCancelDiagnostic = this.handleCancelDiagnostic.bind(this);
         this.handleStatsClick = this.handleStatsClick.bind(this);
         this.handleStatsBackClick = this.handleStatsBackClick.bind(this);
+        this.handleSettingsClick = this.handleSettingsClick.bind(this);
+        this.handleSettingsBackClick = this.handleSettingsBackClick.bind(this);
+        this.handleSaveSettings = this.handleSaveSettings.bind(this);
         this.handleAcceptSuggestion = this.handleAcceptSuggestion.bind(this);
         this.handleDismissSuggestion = this.handleDismissSuggestion.bind(this);
 
@@ -110,6 +113,11 @@ class App {
         // V2.0: Statistiques
         this.ui.addEventListener(this.ui.statsElements.btnStats, 'click', this.handleStatsClick);
         this.ui.addEventListener(this.ui.statsElements.btnStatsBack, 'click', this.handleStatsBackClick);
+
+        // V2.0: Settings
+        this.ui.addEventListener(this.ui.settingsElements.btnSettings, 'click', this.handleSettingsClick);
+        this.ui.addEventListener(this.ui.settingsElements.btnSettingsBack, 'click', this.handleSettingsBackClick);
+        this.ui.addEventListener(this.ui.settingsElements.btnSaveSettings, 'click', this.handleSaveSettings);
 
         // V2.0: Diagnostic
         this.ui.addEventListener(this.ui.diagnosticElements.btnConfirm, 'click', this.handleConfirmDiagnostic);
@@ -301,6 +309,12 @@ class App {
         const stepData = this.timer.getStepData();
         this.currentSession.stepsCompleted.push(stepData);
 
+        // V2.0: Réinitialiser le compteur de répétitions (étape réussie)
+        const currentStep = this.parcours.getCurrentStep();
+        if (currentStep) {
+            this.router.resetStepRepetitions(currentStep.id);
+        }
+
         // Vérifier si c'est la dernière étape
         if (this.parcours.isLastStep()) {
             this.completeCourse();
@@ -317,6 +331,27 @@ class App {
      */
     handleRepeatClick(e) {
         e.preventDefault();
+
+        // V2.0: Enregistrer la répétition
+        const currentStep = this.parcours.getCurrentStep();
+        if (currentStep) {
+            const count = this.router.recordStepRepetition(currentStep.id);
+            console.log(`Répétition ${count} de l'étape ${currentStep.id}`);
+
+            // V2.0: Auto-suggestion de bifurcation après 3 répétitions
+            if (this.router.shouldAutoSuggestBifurcation(currentStep.id)) {
+                console.log('Seuil de répétitions atteint - Suggestion de bifurcation');
+
+                // Afficher un message suggérant la bifurcation
+                if (confirm('Vous avez répété cette étape plusieurs fois. Souhaitez-vous essayer un parcours alternatif adapté à votre difficulté ?')) {
+                    this.ui.showDiagnosticMenu();
+                    return;
+                } else {
+                    // Réinitialiser le compteur si l'utilisateur refuse
+                    this.router.resetStepRepetitions(currentStep.id);
+                }
+            }
+        }
 
         // Réinitialiser le timer pour cette étape
         this.timer.reset();
@@ -525,6 +560,12 @@ class App {
         const stats = this.statistics.generateStatsScreen();
         this.ui.renderStatistics(stats);
         this.ui.showScreen('statistics');
+
+        // V2.0: Attacher l'event listener pour le bouton d'export CSV
+        const btnExportCSV = document.getElementById('btn-export-csv');
+        if (btnExportCSV) {
+            btnExportCSV.addEventListener('click', () => this.handleExportCSV());
+        }
     }
 
     /**
@@ -532,6 +573,81 @@ class App {
      */
     handleStatsBackClick(e) {
         e.preventDefault();
+        this.showHome();
+    }
+
+    /**
+     * V2.0: Gère l'export CSV des statistiques
+     */
+    handleExportCSV() {
+        // Générer le CSV
+        const csvContent = this.statistics.exportToCSV();
+
+        // Créer un blob et un lien de téléchargement
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+
+        // Générer un nom de fichier avec la date
+        const date = new Date().toISOString().split('T')[0];
+        const filename = `out-of-dysarthria-stats-${date}.csv`;
+
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+
+        // Déclencher le téléchargement
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        console.log(`✅ Statistiques exportées: ${filename}`);
+    }
+
+    /**
+     * V2.0: Gère le clic sur le bouton Réglages
+     */
+    handleSettingsClick(e) {
+        e.preventDefault();
+
+        // Charger les préférences actuelles
+        const preferences = this.storage.getPreferences();
+        this.ui.renderSettings(preferences);
+        this.ui.showScreen('settings');
+    }
+
+    /**
+     * V2.0: Gère le retour depuis l'écran de réglages
+     */
+    handleSettingsBackClick(e) {
+        e.preventDefault();
+        this.showHome();
+    }
+
+    /**
+     * V2.0: Gère la sauvegarde des réglages
+     */
+    handleSaveSettings(e) {
+        e.preventDefault();
+
+        // Récupérer les valeurs du formulaire
+        const formValues = this.ui.getSettingsFormValues();
+
+        // Récupérer les préférences actuelles
+        const currentPrefs = this.storage.getPreferences();
+
+        // Mettre à jour les préférences
+        const updatedPrefs = {
+            ...currentPrefs,
+            ...formValues
+        };
+
+        // Sauvegarder
+        this.storage.savePreferences(updatedPrefs);
+
+        console.log('✅ Préférences sauvegardées:', updatedPrefs);
+
+        // Retourner à l'accueil
         this.showHome();
     }
 
