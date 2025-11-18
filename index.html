@@ -28,7 +28,6 @@
     <!-- Écran d'accueil -->
     <div id="screen-home" class="screen active">
         <header class="app-header">
-            <button id="btn-settings" class="btn-text" style="position: absolute; top: var(--spacing-lg); left: var(--spacing-lg);">⚙️ Paramètres</button>
             <h1 class="app-title">Out of Dysarthria</h1>
             <button id="btn-stats" class="btn-text" style="position: absolute; top: var(--spacing-lg); right: var(--spacing-lg);">📊 Stats</button>
         </header>
@@ -102,7 +101,10 @@
             </div>
 
             <div class="home-actions">
-                <button id="btn-start" class="btn btn-primary">Commencer le parcours</button>
+                <div style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); width: 100%;">
+                    <button id="btn-start" class="btn btn-primary" style="flex: 1;">Commencer le parcours</button>
+                    <button id="btn-settings" class="btn-icon" title="Paramètres">⚙️</button>
+                </div>
                 <button id="btn-resume" class="btn btn-secondary" style="display: none;">Reprendre</button>
             </div>
 
