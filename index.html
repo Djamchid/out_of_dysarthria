@@ -91,7 +91,7 @@
                     <h3 style="font-size: 1.1rem; font-weight: 600; color: #27AE60; margin-bottom: var(--spacing-sm);">
                         ✨ Conseils pour réussir
                     </h3>
-                    <ul style="line-height: 1.8; color: var(--color-text-secondary); padding-left: var(--spacing-lg); margin: 0;">
+                    <ul style="line-height: 1.8; color: #2C3E50; padding-left: var(--spacing-lg); margin: 0;">
                         <li>Trouvez un endroit calme pour faire les exercices</li>
                         <li>Prenez votre temps, il n'y a pas de rush</li>
                         <li>Pratiquez régulièrement, même 10 minutes par jour</li>
@@ -102,7 +102,10 @@
             </div>
 
             <div class="home-actions">
-                <button id="btn-start" class="btn btn-primary">Commencer le parcours</button>
+                <div style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); width: 100%;">
+                    <button id="btn-start" class="btn btn-primary" style="flex: 1;">Commencer le parcours</button>
+                    <button id="btn-settings" class="btn-icon" title="Paramètres">⚙️</button>
+                </div>
                 <button id="btn-resume" class="btn btn-secondary" style="display: none;">Reprendre</button>
             </div>
 
@@ -335,6 +338,41 @@
     <div id="screen-onboarding" class="screen">
         <div id="onboarding-content" class="onboarding-step">
             <!-- Contenu dynamique généré par ui.js -->
+        </div>
+    </div>
+
+    <!-- V2.0: Modale de feedback et notation -->
+    <div id="modal-feedback" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="feedback-modal">
+                <h3 class="title">Comment s'est passé ce parcours ?</h3>
+
+                <div class="rating-section">
+                    <p class="subtitle">Notez votre expérience</p>
+                    <div class="star-rating" id="star-rating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="rating-label" id="rating-label">Cliquez pour noter</div>
+                </div>
+
+                <div class="comment-section">
+                    <label for="feedback-comment">Commentaire (optionnel)</label>
+                    <textarea
+                        id="feedback-comment"
+                        rows="4"
+                        placeholder="Partagez votre expérience, difficultés rencontrées, suggestions..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-cancel-feedback" class="btn btn-secondary">Passer</button>
+                    <button id="btn-submit-feedback" class="btn btn-primary" disabled>Envoyer</button>
+                </div>
+            </div>
         </div>
     </div>
 

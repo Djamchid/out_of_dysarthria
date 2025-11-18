@@ -87,6 +87,32 @@
     color: var(--color-danger-dark);
 }
 
+/* Bouton icône */
+.btn-icon {
+    background: none;
+    color: var(--text-secondary);
+    padding: var(--spacing-sm);
+    font-size: 1.5rem;
+    min-height: var(--tap-target-min);
+    min-width: var(--tap-target-min);
+    width: auto;
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background-color: var(--bg-gray);
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.btn-icon:active {
+    transform: scale(1.05);
+}
+
 /* États des boutons */
 .btn:disabled {
     opacity: 0.5;
@@ -546,6 +572,214 @@
     flex: 1;
     cursor: pointer;
     font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   FEEDBACK MODAL (V2.0)
+   ============================================ */
+
+.feedback-modal {
+    text-align: center;
+}
+
+.feedback-modal .title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Section de notation par étoiles */
+.rating-section {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.rating-section .subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.star-rating .star {
+    font-size: 48px;
+    color: var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+
+.star-rating .star:hover,
+.star-rating .star.hover {
+    color: #FFC107;
+    transform: scale(1.1);
+}
+
+.star-rating .star.selected {
+    color: #FFC107;
+}
+
+.rating-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    min-height: 24px;
+}
+
+/* Section de commentaire */
+.comment-section {
+    text-align: left;
+    margin-bottom: var(--spacing-xl);
+}
+
+.comment-section label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.comment-section textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    font-family: inherit;
+    font-size: var(--font-size-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    resize: vertical;
+    transition: border-color var(--transition-fast);
+}
+
+.comment-section textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* ============================================
+   SETTINGS SCREEN (V2.0)
+   ============================================ */
+
+.settings-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+.settings-section {
+    background: var(--bg-white);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.settings-section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-item-info {
+    flex: 1;
+}
+
+.settings-item-label {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.settings-item-value {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    margin-left: var(--spacing-md);
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    transition: var(--transition-fast);
+    border-radius: 28px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: var(--transition-fast);
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: var(--color-primary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(22px);
+}
+
+/* Boutons d'action */
+.btn-full-width {
+    width: 100%;
+    margin-bottom: var(--spacing-sm);
+}
+
+.btn-full-width:last-child {
+    margin-bottom: 0;
+}
+
+/* Version */
+.settings-version {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
 }
 
 /* ============================================
