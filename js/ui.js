@@ -74,8 +74,18 @@ class UI {
             content: document.getElementById('onboarding-content')
         };
 
+        this.feedbackElements = {
+            modal: document.getElementById('modal-feedback'),
+            starRating: document.getElementById('star-rating'),
+            ratingLabel: document.getElementById('rating-label'),
+            comment: document.getElementById('feedback-comment'),
+            btnCancel: document.getElementById('btn-cancel-feedback'),
+            btnSubmit: document.getElementById('btn-submit-feedback')
+        };
+
         // V2.0: État de sélection
         this.selectedBlockage = null;
+        this.selectedRating = 0;
     }
 
     /**
@@ -716,6 +726,136 @@ class UI {
     getSelectedDuration() {
         const radio = document.querySelector('input[name="duration"]:checked');
         return radio ? parseInt(radio.value) : 30;
+    }
+
+    // ==========================================
+    // V2.0: Feedback Modal
+    // ==========================================
+
+    /**
+     * Affiche la modale de feedback
+     */
+    showFeedbackModal() {
+        if (!this.feedbackElements.modal) return;
+
+        // Réinitialiser la modale
+        this.selectedRating = 0;
+        this.updateStarDisplay(0);
+        if (this.feedbackElements.comment) {
+            this.feedbackElements.comment.value = '';
+        }
+        if (this.feedbackElements.btnSubmit) {
+            this.feedbackElements.btnSubmit.disabled = true;
+        }
+
+        // Afficher la modale
+        this.feedbackElements.modal.style.display = 'block';
+
+        // Configurer les événements des étoiles
+        this.setupStarRating();
+    }
+
+    /**
+     * Cache la modale de feedback
+     */
+    hideFeedbackModal() {
+        if (this.feedbackElements.modal) {
+            this.feedbackElements.modal.style.display = 'none';
+        }
+    }
+
+    /**
+     * Configure les interactions avec les étoiles
+     */
+    setupStarRating() {
+        if (!this.feedbackElements.starRating) return;
+
+        const stars = this.feedbackElements.starRating.querySelectorAll('.star');
+
+        stars.forEach(star => {
+            // Clic sur une étoile
+            star.addEventListener('click', (e) => {
+                const rating = parseInt(e.target.dataset.rating);
+                this.selectRating(rating);
+            });
+
+            // Hover sur une étoile
+            star.addEventListener('mouseenter', (e) => {
+                const rating = parseInt(e.target.dataset.rating);
+                this.updateStarDisplay(rating, true);
+            });
+        });
+
+        // Quand on quitte la zone des étoiles
+        this.feedbackElements.starRating.addEventListener('mouseleave', () => {
+            this.updateStarDisplay(this.selectedRating);
+        });
+    }
+
+    /**
+     * Sélectionne une notation
+     * @param {number} rating Note de 1 à 5
+     */
+    selectRating(rating) {
+        this.selectedRating = rating;
+        this.updateStarDisplay(rating);
+
+        // Activer le bouton de soumission
+        if (this.feedbackElements.btnSubmit) {
+            this.feedbackElements.btnSubmit.disabled = false;
+        }
+
+        // Mettre à jour le label
+        const labels = {
+            1: '⭐ Pas satisfait',
+            2: '⭐⭐ Peu satisfait',
+            3: '⭐⭐⭐ Correct',
+            4: '⭐⭐⭐⭐ Satisfait',
+            5: '⭐⭐⭐⭐⭐ Très satisfait'
+        };
+
+        if (this.feedbackElements.ratingLabel) {
+            this.feedbackElements.ratingLabel.textContent = labels[rating] || '';
+        }
+    }
+
+    /**
+     * Met à jour l'affichage visuel des étoiles
+     * @param {number} rating Note à afficher
+     * @param {boolean} isHover Si c'est un hover temporaire
+     */
+    updateStarDisplay(rating, isHover = false) {
+        if (!this.feedbackElements.starRating) return;
+
+        const stars = this.feedbackElements.starRating.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            star.classList.remove('selected', 'hover');
+
+            if (index < rating) {
+                star.classList.add(isHover ? 'hover' : 'selected');
+            }
+        });
+
+        // Si hover = 0, afficher le label par défaut
+        if (rating === 0 && this.feedbackElements.ratingLabel && !isHover) {
+            this.feedbackElements.ratingLabel.textContent = 'Cliquez pour noter';
+        }
+    }
+
+    /**
+     * Récupère la notation sélectionnée
+     * @returns {number}
+     */
+    getSelectedRating() {
+        return this.selectedRating;
+    }
+
+    /**
+     * Récupère le commentaire saisi
+     * @returns {string}
+     */
+    getFeedbackComment() {
+        return this.feedbackElements.comment ? this.feedbackElements.comment.value.trim() : '';
     }
 
     /**
