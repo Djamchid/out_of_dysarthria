@@ -212,12 +212,35 @@ class App {
 
     /**
      * Démarre un nouveau parcours
+     * @param {string} parcoursType Type de parcours à démarrer (optionnel)
      */
-    startNewCourse() {
+    startNewCourse(parcoursType = null) {
         console.log('🚀 Démarrage d\'un nouveau parcours');
 
-        // Réinitialiser le parcours
-        this.parcours.reset();
+        // Sélectionner le type de parcours
+        let selectedType = parcoursType;
+
+        if (!selectedType) {
+            // Récupérer les parcours favoris de l'utilisateur
+            const preferences = this.storage.getPreferences();
+            const favoriteParcours = preferences.favoriteParcours || [];
+
+            if (favoriteParcours.length > 0) {
+                // Choisir un parcours favori au hasard
+                const randomIndex = Math.floor(Math.random() * favoriteParcours.length);
+                selectedType = favoriteParcours[randomIndex];
+                console.log(`📌 Parcours sélectionné parmi les favoris: ${selectedType}`);
+            } else {
+                // Par défaut, utiliser le parcours standard
+                selectedType = PARCOURS_TYPES.STANDARD;
+                console.log('📌 Aucun favori, utilisation du parcours standard');
+            }
+        } else {
+            console.log(`📌 Parcours spécifié: ${selectedType}`);
+        }
+
+        // Réinitialiser le parcours avec le type sélectionné
+        this.parcours.reset(selectedType);
 
         // Créer une nouvelle session
         this.currentSession = this.storage.createNewSession(0);
@@ -748,14 +771,9 @@ class App {
         // Enregistrer l'acceptance
         this.suggestions.recordSuggestionFeedback(Date.now().toString(), true);
 
-        // Démarrer avec le parcours suggéré
-        if (suggestion.parcoursType) {
-            this.parcours.reset(suggestion.parcoursType);
-        }
-
-        // Cacher la suggestion et démarrer
+        // Cacher la suggestion et démarrer avec le parcours suggéré
         this.ui.hideSuggestion();
-        this.startNewCourse();
+        this.startNewCourse(suggestion.parcoursType || null);
     }
 
     /**
