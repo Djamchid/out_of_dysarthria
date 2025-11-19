@@ -59,15 +59,30 @@ class UI {
         };
 
         this.settingsElements = {
+            // Boutons de navigation
             btnSettings: document.getElementById('btn-settings'),
             btnSettingsBack: document.getElementById('btn-settings-back'),
             btnSaveSettings: document.getElementById('btn-save-settings'),
             settingsContent: document.getElementById('settings-content'),
+            // Menu des paramètres
             btnChooseParcours: document.getElementById('btn-choose-parcours'),
             btnViewStats: document.getElementById('btn-view-stats'),
             btnResetPartial: document.getElementById('btn-reset-partial'),
             btnResetTotal: document.getElementById('btn-reset-total'),
-            btnParcoursBack: document.getElementById('btn-parcours-back')
+            btnParcoursBack: document.getElementById('btn-parcours-back'),
+            // Affichage des valeurs
+            parcoursValue: document.getElementById('settings-parcours-value'),
+            durationValue: document.getElementById('settings-duration-value'),
+            suggestionsValue: document.getElementById('settings-suggestions-value'),
+            sessionsCount: document.getElementById('settings-sessions-count'),
+            storageSize: document.getElementById('settings-storage-size'),
+            // Actions de configuration
+            toggleSuggestions: document.getElementById('toggle-suggestions'),
+            btnEditParcours: document.getElementById('btn-edit-parcours'),
+            btnEditDuration: document.getElementById('btn-edit-duration'),
+            btnResetOnboarding: document.getElementById('btn-reset-onboarding'),
+            btnClearHistory: document.getElementById('btn-clear-history'),
+            btnResetAll: document.getElementById('btn-reset-all')
         };
 
         this.diagnosticElements = {
@@ -95,22 +110,6 @@ class UI {
             comment: document.getElementById('feedback-comment'),
             btnCancel: document.getElementById('btn-cancel-feedback'),
             btnSubmit: document.getElementById('btn-submit-feedback')
-        };
-
-        this.settingsElements = {
-            btnSettings: document.getElementById('btn-settings'),
-            btnSettingsBack: document.getElementById('btn-settings-back'),
-            parcoursValue: document.getElementById('settings-parcours-value'),
-            durationValue: document.getElementById('settings-duration-value'),
-            suggestionsValue: document.getElementById('settings-suggestions-value'),
-            sessionsCount: document.getElementById('settings-sessions-count'),
-            storageSize: document.getElementById('settings-storage-size'),
-            toggleSuggestions: document.getElementById('toggle-suggestions'),
-            btnEditParcours: document.getElementById('btn-edit-parcours'),
-            btnEditDuration: document.getElementById('btn-edit-duration'),
-            btnResetOnboarding: document.getElementById('btn-reset-onboarding'),
-            btnClearHistory: document.getElementById('btn-clear-history'),
-            btnResetAll: document.getElementById('btn-reset-all')
         };
 
         // V2.0: État de sélection
