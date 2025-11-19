@@ -242,8 +242,8 @@ class App {
         // Réinitialiser le parcours avec le type sélectionné
         this.parcours.reset(selectedType);
 
-        // Créer une nouvelle session
-        this.currentSession = this.storage.createNewSession(0);
+        // Créer une nouvelle session avec le type de parcours
+        this.currentSession = this.storage.createNewSession(0, selectedType);
         this.storage.saveCurrentSession(this.currentSession);
 
         // Afficher la première étape
@@ -265,7 +265,11 @@ class App {
             return;
         }
 
-        // Restaurer l'état du parcours
+        // Restaurer le type de parcours et l'index de l'étape
+        const parcoursType = this.currentSession.parcoursType || PARCOURS_TYPES.STANDARD;
+        console.log(`📌 Reprise du parcours: ${parcoursType}, étape ${this.currentSession.currentStepIndex + 1}`);
+
+        this.parcours.reset(parcoursType);
         this.parcours.setCurrentStepIndex(this.currentSession.currentStepIndex);
 
         // Afficher l'étape courante
@@ -330,6 +334,7 @@ class App {
         if (!this.currentSession) return;
 
         this.currentSession.currentStepIndex = this.parcours.getCurrentStepIndex();
+        this.currentSession.parcoursType = this.parcours.getCurrentType();
         this.storage.saveCurrentSession(this.currentSession);
     }
 
