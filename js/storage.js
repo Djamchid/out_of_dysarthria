@@ -14,7 +14,7 @@ class Storage {
         };
 
         this.MAX_HISTORY_LENGTH = 50; // V2.0: augmenté de 10 à 50
-        this.CURRENT_VERSION = '2.0.0';
+        this.CURRENT_VERSION = '2.1.0';
 
         // Vérifier la disponibilité de localStorage
         this.isAvailable = this.checkAvailability();
@@ -477,17 +477,67 @@ class Storage {
     }
 
     /**
+     * Migration V2.0 → V2.1
+     * Migre les identifiants de parcours A, B, C, D vers les nouveaux noms
+     */
+    migrateV2ToV2_1() {
+        console.log('🔄 Migration V2.0 → V2.1 : Identifiants de parcours...');
+
+        const parcoursMapping = {
+            'A': 'detente-laryngee',
+            'B': 'relachement-musculaire',
+            'C': 'mode-economie',
+            'D': 'standard-modifie'
+        };
+
+        // Migrer les préférences
+        const prefs = this.getPreferences();
+        if (prefs.favoriteParcours && Array.isArray(prefs.favoriteParcours)) {
+            let migrated = false;
+            prefs.favoriteParcours = prefs.favoriteParcours.map(parcours => {
+                if (parcoursMapping[parcours]) {
+                    console.log(`  ✓ Parcours favori: ${parcours} → ${parcoursMapping[parcours]}`);
+                    migrated = true;
+                    return parcoursMapping[parcours];
+                }
+                return parcours;
+            });
+
+            if (migrated) {
+                this.savePreferences(prefs);
+            }
+        }
+
+        // Migrer la session en cours
+        const currentSession = this.getCurrentSession();
+        if (currentSession && currentSession.parcoursType && parcoursMapping[currentSession.parcoursType]) {
+            console.log(`  ✓ Session en cours: ${currentSession.parcoursType} → ${parcoursMapping[currentSession.parcoursType]}`);
+            currentSession.parcoursType = parcoursMapping[currentSession.parcoursType];
+            this.saveCurrentSession(currentSession);
+        }
+
+        console.log('✅ Migration V2.0 → V2.1 terminée');
+    }
+
+    /**
      * Vérifie et effectue la migration si nécessaire
      */
     migrateIfNeeded() {
         const appVersion = this.get(this.KEYS.APP_VERSION, '1.0.0');
 
         if (appVersion !== this.CURRENT_VERSION) {
-            console.log(`Version détectée: ${appVersion}, version actuelle: ${this.CURRENT_VERSION}`);
+            console.log(`🔄 Migration: ${appVersion} → ${this.CURRENT_VERSION}`);
 
             if (appVersion === '1.0.0' || !appVersion) {
                 this.migrateV1ToV2();
             }
+
+            if (appVersion === '2.0.0') {
+                this.migrateV2ToV2_1();
+            }
+
+            // Mettre à jour la version finale
+            this.set(this.KEYS.APP_VERSION, this.CURRENT_VERSION);
         }
     }
 
