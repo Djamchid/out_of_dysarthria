@@ -250,13 +250,15 @@ class Storage {
     /**
      * Crée une nouvelle session
      * @param {number} startStepIndex Index de l'étape de départ
+     * @param {string} parcoursType Type de parcours
      * @returns {Object}
      */
-    createNewSession(startStepIndex = 0) {
+    createNewSession(startStepIndex = 0, parcoursType = 'standard') {
         return {
             id: this.generateSessionId(),
             startedAt: new Date().toISOString(),
             currentStepIndex: startStepIndex,
+            parcoursType: parcoursType,
             stepsCompleted: [],
             isActive: true
         };
