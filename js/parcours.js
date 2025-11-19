@@ -720,14 +720,18 @@ class Parcours {
      */
     getStepsForType(type) {
         switch (type) {
-            // Parcours existants
+            // Parcours existants (avec alias pour compatibilité)
             case PARCOURS_TYPES.A_DETENTE:
+            case 'A': // Alias pour rétrocompatibilité
                 return PARCOURS_A_DETENTE;
             case PARCOURS_TYPES.B_RELACHEMENT:
+            case 'B': // Alias pour rétrocompatibilité
                 return PARCOURS_B_RELACHEMENT;
             case PARCOURS_TYPES.C_ECONOMIE:
+            case 'C': // Alias pour rétrocompatibilité
                 return PARCOURS_C_ECONOMIE;
             case PARCOURS_TYPES.D_MODIFIE:
+            case 'D': // Alias pour rétrocompatibilité
                 return PARCOURS_D_MODIFIE;
 
             // Nouveaux parcours Tabata - Fonction
