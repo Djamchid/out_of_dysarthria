@@ -12,7 +12,8 @@ class UI {
             completion: document.getElementById('screen-completion'),
             statistics: document.getElementById('screen-statistics'),
             settings: document.getElementById('screen-settings'),
-            onboarding: document.getElementById('screen-onboarding')
+            onboarding: document.getElementById('screen-onboarding'),
+            parcoursChoice: document.getElementById('screen-parcours-choice')
         };
 
         // Références aux éléments de l'écran d'accueil
@@ -61,7 +62,12 @@ class UI {
             btnSettings: document.getElementById('btn-settings'),
             btnSettingsBack: document.getElementById('btn-settings-back'),
             btnSaveSettings: document.getElementById('btn-save-settings'),
-            settingsContent: document.getElementById('settings-content')
+            settingsContent: document.getElementById('settings-content'),
+            btnChooseParcours: document.getElementById('btn-choose-parcours'),
+            btnViewStats: document.getElementById('btn-view-stats'),
+            btnResetPartial: document.getElementById('btn-reset-partial'),
+            btnResetTotal: document.getElementById('btn-reset-total'),
+            btnParcoursBack: document.getElementById('btn-parcours-back')
         };
 
         this.diagnosticElements = {
