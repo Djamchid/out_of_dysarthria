@@ -133,6 +133,13 @@ class App {
         this.ui.addEventListener(this.ui.settingsElements.btnSettingsBack, 'click', this.handleSettingsBackClick);
         this.ui.addEventListener(this.ui.settingsElements.btnSaveSettings, 'click', this.handleSaveSettings);
 
+        // V2.0: Settings Menu Items
+        this.ui.addEventListener(this.ui.settingsElements.btnChooseParcours, 'click', this.handleChooseParcoursClick.bind(this));
+        this.ui.addEventListener(this.ui.settingsElements.btnViewStats, 'click', this.handleStatsClick);
+        this.ui.addEventListener(this.ui.settingsElements.btnResetPartial, 'click', this.handleClearHistory);
+        this.ui.addEventListener(this.ui.settingsElements.btnResetTotal, 'click', this.handleResetAll);
+        this.ui.addEventListener(this.ui.settingsElements.btnParcoursBack, 'click', this.handleParcoursBackClick.bind(this));
+
         // V2.0: Diagnostic
         this.ui.addEventListener(this.ui.diagnosticElements.btnConfirm, 'click', this.handleConfirmDiagnostic);
         this.ui.addEventListener(this.ui.diagnosticElements.btnCancel, 'click', this.handleCancelDiagnostic);
@@ -762,6 +769,15 @@ class App {
 
         // Retourner à l'accueil
         this.showHome();
+
+        // Scroller en bas et mettre le focus sur le bouton "Commencer"
+        setTimeout(() => {
+            const btnStart = this.ui.homeElements.btnStart;
+            if (btnStart) {
+                btnStart.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                btnStart.focus();
+            }
+        }, 300);
     }
 
     /**
@@ -910,7 +926,7 @@ class App {
      */
     handleSettingsClick(e) {
         e.preventDefault();
-        this.ui.showSettings(this.storage);
+        this.ui.showScreen('settings');
     }
 
     /**
@@ -919,6 +935,24 @@ class App {
     handleSettingsBackClick(e) {
         e.preventDefault();
         this.showHome();
+    }
+
+    /**
+     * Gère le clic sur "Choix du parcours"
+     */
+    handleChooseParcoursClick(e) {
+        e.preventDefault();
+        const preferences = this.storage.getPreferences();
+        this.ui.renderSettings(preferences);
+        this.ui.showScreen('parcoursChoice');
+    }
+
+    /**
+     * Gère le retour depuis l'écran de choix du parcours
+     */
+    handleParcoursBackClick(e) {
+        e.preventDefault();
+        this.ui.showScreen('settings');
     }
 
     /**
